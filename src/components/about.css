@@ -3,6 +3,7 @@
 #imageabout{
     left: 2vw;
     order: 1;
+    border: 0px;
 }
 #aboutleft{
     order: 2;
