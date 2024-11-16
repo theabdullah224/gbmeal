@@ -336,7 +336,9 @@ function Pref() {
     sendDataToBackend();
     setLoader(true);
     const allergy = selectedFoodAllergies;
-
+    const user = await localStorage.getItem("user");
+    const parsedUser = JSON.parse(user); // Convert string to object
+    const userId = parsedUser.user_id;
     try {
       const generateResponse = await fetch(`${API_BASE_URL}/generate`, {
         method: "POST",
@@ -347,7 +349,8 @@ function Pref() {
           allergies: menuStates.allergy.selected || "nothing",
           dislikes: menuStates.dislike.selected || "nothing",
           dietaryRestrictions: menuStates.mealPlan.selected || "nothing",
-          total_calories:menuStates.preference.selected || "blank"
+          total_calories:menuStates.preference.selected || "blank",
+          id:userId
         }),
       });
 

@@ -11,10 +11,8 @@ import base64
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta  # Added import
-from models import db, User, initialize_database
-# import openai
+from models import db, User, initialize_database, user_pdf
 from openai import OpenAI
-
 import stripe
 from flask import Flask
 import logging
@@ -47,21 +45,25 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 import re
 import pdfkit
-
+import boto3
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
+
+
+
+
+
 config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-# pdf = pdfkit.from_string(html_content, False, configuration=config)
+
 # Load environment variables from a .env file
 load_dotenv()
 
 # Initialize the Flask application
 app = Flask(__name__)
-stripe.api_key = os.getenv('STRIPEAPIKEY')
+stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 app.config['JWT_SECRET_KEY'] = os.getenv('JWTSECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30) 
 jwt = JWTManager(app)
-# Enable Cross-Origin Resource Sharing (CORS) to allow requests from any origin
-# CORS(app, resources={r"/": {"origins": "*"}})
+
 CORS(app)
 api = Blueprint('api', __name__)
 from flask_migrate import Migrate
@@ -91,6 +93,18 @@ SMTP_SERVER = os.getenv('SMTP_SERVER')
 SMTP_PORT = int(os.getenv('SMTP_PORT', 465))
 SMTP_USER = os.getenv('SMTP_USER')
 SMTP_PASS = os.getenv('SMTP_PASS')
+
+
+
+# s3 bucket configuration
+AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
+AWS_BUCKET_NAME = os.getenv('AWS_BUCKET_NAME')
+AWS_REGION = os.getenv('AWS_REGION')
+# Initialize S3 client
+s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_KEY, region_name=AWS_REGION)
+
+
 
 # Set up OpenAI client with API key from environment variables
 client = OpenAI()
@@ -866,6 +880,138 @@ def test_cors():
 
 
 
+@app.route('/api/user/<int:user_id>/pdfs', methods=['GET'])
+def get_user_pdfs(user_id):
+    try:
+        # Query all PDFs for the user, ordered by creation date
+        pdfs = user_pdf.query.filter_by(user_id=user_id)\
+            .order_by(user_pdf.created_at.desc())\
+            .all()
+        
+        if not pdfs:
+            return jsonify({
+                'message': 'No PDFs found for this user',
+                'pdfs': []
+            }), 200
+        
+        # Format the PDF data
+        pdf_list = [{
+            'id': pdf.id,
+            'meal_plan_url': pdf.meal_plan_url,
+            'shopping_list_url': pdf.shopping_list_url,
+            'created_at': pdf.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        } for pdf in pdfs]
+        
+        return jsonify({
+            'message': 'PDFs retrieved successfully',
+            'pdfs': pdf_list
+        }), 200
+        
+    except Exception as e:
+        logging.error(f"Error fetching PDFs: {str(e)}")
+        return jsonify({
+            'error': 'Failed to fetch PDFs',
+            'message': str(e)
+        }), 500
+
+
+@app.route('/api/pdfs/<int:pdf_id>', methods=['DELETE'])
+def delete_pdf(pdf_id):
+    try:
+        pdf = user_pdf.query.get(pdf_id)
+        
+        if not pdf:
+            return jsonify({
+                'error': 'PDF not found'
+            }), 404
+            
+        # Delete from S3 bucket
+        try:
+            # Extract keys from URLs
+            meal_plan_key = pdf.meal_plan_url.split('.com/')[-1]
+            shopping_list_key = pdf.shopping_list_url.split('.com/')[-1]
+            
+            # Delete from S3
+            s3_client.delete_object(Bucket=AWS_BUCKET_NAME, Key=meal_plan_key)
+            s3_client.delete_object(Bucket=AWS_BUCKET_NAME, Key=shopping_list_key)
+        except Exception as e:
+            logging.error(f"Error deleting from S3: {str(e)}")
+            # Continue with database deletion even if S3 deletion fails
+        
+        # Delete from database
+        db.session.delete(pdf)
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'PDF deleted successfully'
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error deleting PDF: {str(e)}")
+        return jsonify({
+            'error': 'Failed to delete PDF',
+            'message': str(e)
+        }), 500
+
+def upload_pdfs_to_s3(user_id, meal_plan_base64, shopping_list_base64):
+    """
+    Upload PDFs to S3 and store URLs in database
+    """
+    try:
+        # Generate unique filenames using timestamp
+        timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+        meal_plan_key = f"meal_plans/user_{user_id}/{timestamp}_meal_plan.pdf"
+        shopping_list_key = f"shopping_lists/user_{user_id}/{timestamp}_shopping_list.pdf"
+        
+        # Convert base64 to bytes
+        meal_plan_bytes = base64.b64decode(meal_plan_base64)
+        shopping_list_bytes = base64.b64decode(shopping_list_base64)
+        
+        # Upload meal plan PDF to S3
+        s3_client.put_object(
+            Bucket=AWS_BUCKET_NAME,
+            Key=meal_plan_key,
+            Body=meal_plan_bytes,
+            ContentType='application/pdf'
+        )
+        
+        # Upload shopping list PDF to S3
+        s3_client.put_object(
+            Bucket=AWS_BUCKET_NAME,
+            Key=shopping_list_key,
+            Body=shopping_list_bytes,
+            ContentType='application/pdf'
+        )
+        
+        # Generate S3 URLs
+        meal_plan_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{meal_plan_key}"
+        shopping_list_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{shopping_list_key}"
+        
+        # Store URLs in database
+        pdfs = user_pdf(
+            user_id=user_id,
+            meal_plan_url=meal_plan_url,
+            shopping_list_url=shopping_list_url
+        )
+        
+        db.session.add(pdfs)
+        db.session.commit()
+        
+        return {
+            'meal_plan_url': meal_plan_url,
+            'shopping_list_url': shopping_list_url
+        }
+        
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error uploading PDFs: {str(e)}")
+        raise Exception(f"Failed to upload PDFs: {str(e)}")
+
+
+
+
+
 @app.route('/generate', methods=['OPTIONS', 'POST'])
 def generate_meal_plan():
     if request.method == 'OPTIONS':
@@ -899,16 +1045,16 @@ def generate_meal_plan():
         dietary_restrictions = data.get('dietaryRestrictions', [])
         servings = data.get('servings')
         total_calories = data.get('total_calories')
-
-        print(total_calories,"---------------------------------------------------")
+        id=data.get('id')
+       
         match = re.match(r"^(\d+)", servings)
         if match:
             servings = int(match.group(1))
         else:
             raise ValueError("Unexpected serving size format")
 
-        if not dietary_restrictions or not servings:
-            return jsonify({"error": "Invalid input: preferredMeal and servings are required."}), 400
+        # if not dietary_restrictions or not servings:
+        #     return jsonify({"error": "Invalid input: preferredMeal and servings are required."}), 400
 
 
         meal_plan = ""  # Initialize an empty string to store the meal plan
@@ -1233,6 +1379,14 @@ You are a meal planning assistant. Provide the meal plan in HTML format only, wi
         shopping_list_html = html_template.replace("{content}", split_marker + parts[1]).replace("{title}", "Shopping List")
         shopping_list_pdf = pdfkit.from_string(shopping_list_html, False, configuration=config)
         shopping_list_base64 = base64.b64encode(shopping_list_pdf).decode('utf-8')
+
+        current_user = User.query.get(id)  # Replace user_id with actual user ID
+    
+        # Upload PDFs and get URLs
+        
+        pdf_urls = upload_pdfs_to_s3(current_user, meal_plan_base64, shopping_list_base64)
+
+        print(pdf_urls,"--------------------------------")
 
         return jsonify({
             "meal_plan_pdf": meal_plan_base64,

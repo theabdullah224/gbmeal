@@ -10,7 +10,6 @@ const PricingCard = () => {
   useEffect(() => {
     // Check localStorage for the "user" object
     const user = localStorage.getItem("user");
-    console.log(user);
     if (user) {
       const parsedUser = JSON.parse(user);
       fetchUserData(parsedUser.user_id); // Parse the JSON string
@@ -35,7 +34,6 @@ const PricingCard = () => {
       if (response.data && typeof response.data === "object") {
         const data = response.data;
         setstatus(response.data.subscription_status);
-        console.log(status);
         localStorage.setItem("userdata", JSON.stringify(response.data));
 
         // Log the response data (or the saved data)

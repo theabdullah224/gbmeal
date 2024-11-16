@@ -3,13 +3,23 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import logging
+from sqlalchemy.orm import relationship
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:1ZSrp6RiwONU@ep-lively-hill-a5h86jid.us-east-2.aws.neon.tech/neondb?sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv('SQL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 logger = logging.getLogger(__name__)
 db =SQLAlchemy(app)
+
+class user_pdf(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    meal_plan_url = db.Column(db.String(500))
+    shopping_list_url = db.Column(db.String(500))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +41,16 @@ class User(db.Model):
     servings = db.Column(db.String(255))  # New column
     dislikes = db.Column(db.String(255))  # New column
     total_calories = db.Column(db.String(255))
+    pdfs = relationship('user_pdf', backref='user', lazy=True)
+
+
+
+
+
+
+
+
+    
 
     def is_subscription_active(self):
         now = datetime.utcnow()
@@ -66,6 +86,13 @@ class User(db.Model):
         else:
             self.pdf_generated = False
         db.session.commit()
+
+
+
+
+
+
+
 
 def initialize_database():
     with app.app_context():

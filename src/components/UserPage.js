@@ -4,6 +4,7 @@ import img1 from "./Resource/plate.png";
 import userimage from "./Resource/patternpic.png";
 import capsule from "./Resource/capsule.png";
 // import { useNavigate } from "react-router-dom";
+import Showpdf from './ShowPDF'
 import { useState } from "react";
 import {
   AlertTriangle,
@@ -73,10 +74,50 @@ function UserPage() {
   const [allergy, setallergy] = useState("");
   const [dislike, setdislike] = useState("");
   const [diatryrestriction, setdiatryrestriction] = useState("");
-
+  const [pdfs, setPdfs] = useState([]);
+ 
   const [pdfList, setPdfList] = useState([]);
   // const { isLoggedIn } = useStore();
   // const [name, setName] = useState("");
+
+
+
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user._id
+    if(userId){
+
+   
+    const fetchPDFs = async () => {
+      try {
+        const response = await fetch(`https://meeel.xyz/api/user/${userId}/pdfs`);
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.message);
+        
+        setPdfs(data.pdfs);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPDFs();
+}
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('userdata'));
@@ -84,7 +125,6 @@ function UserPage() {
       setName(user.name);
     }
     const storedPdfList = JSON.parse(localStorage.getItem("pdfList")) || [];
-      // console.log(storedPdfList)
     setPdfList(storedPdfList);
   }, [isLoggedIn]);
 
@@ -125,7 +165,6 @@ function UserPage() {
   useEffect(() => {
     // Check localStorage for the "user" object
     const user = localStorage.getItem("user");
-    // console.log(user)
     const userdata = localStorage.getItem("userdata");
     if (userdata) {
       const parsedata = JSON.parse(userdata);
@@ -193,7 +232,6 @@ function UserPage() {
       });
 
       if (response.data && typeof response.data === "object") {
-        // console.log(response.data);
         setUserData(response.data);
 
         setName(response.data.name || "Not available");
@@ -207,8 +245,6 @@ function UserPage() {
         setfamilymember(response.data.preferred_meal || "Not available");
 
         setcolories(response.data.total_calories || "Not available");
-        // console.log(servings);
-        console.log(response.data)
         localStorage.setItem("userdata", JSON.stringify(response.data));
 
         // Log the response data (or the saved data)
@@ -243,7 +279,6 @@ function UserPage() {
       // setsave("Saving...");
 
       setLoading(true);
-      // console.log("inside save", userId);
       try {
         const response = await axios.put(
           `https://meeel.xyz/update`,
@@ -327,7 +362,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -362,7 +396,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -396,7 +429,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -430,7 +462,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -464,7 +495,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -498,7 +528,6 @@ function UserPage() {
         );
 
         if (response.status === 200) {
-          // console.log(response.data);
           setIsEditable(false);
           fetchUserData(); // Refetch user data to get the latest info
         }
@@ -1101,51 +1130,52 @@ onClick={handleEmailEditClick}
               </div>
             )}
             {activeTab === "pdf" && (
-               <div className="container mx-auto px-4 py-8 h-full">
-               <h1 className="text-3xl font-bold mb-6 text-gray-800">My Resources</h1>
-               {isLoggedIn && (
-                 <div className="overflow-y-auto max-h-[30rem]">
-                   {pdfList.length > 0 ? (
-                   <ul className="space-y-4 w-full max-w-4xl ">
-                   {pdfList.map((pdf) => (
-                     <li 
-                       key={pdf.id} 
-                       className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 px-3 sm:px-4 py-3 rounded-md hover:bg-gray-100 transition duration-150 ease-in-out"
-                     >
-                       <div className="flex items-center space-x-4 mb-2 sm:mb-0">
-                         <FontAwesomeIcon icon={faFilePdf} className="text-P-Green1 text-xl sm:text-2xl flex-shrink-0" />
-                         <div className="min-w-0 flex-1">
-                           <p className="font-semibold text-gray-700 text-sm sm:text-base truncate  max-w-[8rem] sm:max-w-full">
-                             {pdf.name || "Unnamed PDF"}
-                           </p>
-                           <p className="text-xs sm:text-sm text-gray-500">
-                             {new Date(pdf.generatedDate).toLocaleDateString()}
-                           </p>
-                         </div>
-                       </div>
-                       <div className="flex space-x-2 w-full sm:w-auto justify-end mt-2 sm:mt-0">
-                         <button
-                           onClick={() => handlePdfClick(pdf.data)}
-                           className="flex-1 sm:flex-none px-3 py-1 bg-P-Green1 text-white text-sm rounded hover:bg-blue-600 transition duration-150 ease-in-out"
-                         >
-                           View
-                         </button>
-                         <button
-                           onClick={() => handleDelete(pdf.id)}
-                           className="flex-1 sm:flex-none px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition duration-150 ease-in-out"
-                         >
-                           <FontAwesomeIcon icon={faTrash} />
-                         </button>
-                       </div>
-                     </li>
-                   ))}
-                 </ul>
-                   ) : (
-                     <p className="text-center text-gray-500">No PDFs available</p>
-                   )}
-                 </div>
-               )}
-             </div>
+            //    <div className="container mx-auto px-4 py-8 h-full">
+            //    <h1 className="text-3xl font-bold mb-6 text-gray-800">My Resources</h1>
+            //    {isLoggedIn && (
+            //      <div className="overflow-y-auto max-h-[30rem]">
+            //        {pdfList.length > 0 ? (
+            //        <ul className="space-y-4 w-full max-w-4xl ">
+            //        {pdfList.map((pdf) => (
+            //          <li 
+            //            key={pdf.id} 
+            //            className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 px-3 sm:px-4 py-3 rounded-md hover:bg-gray-100 transition duration-150 ease-in-out"
+            //          >
+            //            <div className="flex items-center space-x-4 mb-2 sm:mb-0">
+            //              <FontAwesomeIcon icon={faFilePdf} className="text-P-Green1 text-xl sm:text-2xl flex-shrink-0" />
+            //              <div className="min-w-0 flex-1">
+            //                <p className="font-semibold text-gray-700 text-sm sm:text-base truncate  max-w-[8rem] sm:max-w-full">
+            //                  {pdf.name || "Unnamed PDF"}
+            //                </p>
+            //                <p className="text-xs sm:text-sm text-gray-500">
+            //                  {new Date(pdf.generatedDate).toLocaleDateString()}
+            //                </p>
+            //              </div>
+            //            </div>
+            //            <div className="flex space-x-2 w-full sm:w-auto justify-end mt-2 sm:mt-0">
+            //              <button
+            //                onClick={() => handlePdfClick(pdf.data)}
+            //                className="flex-1 sm:flex-none px-3 py-1 bg-P-Green1 text-white text-sm rounded hover:bg-blue-600 transition duration-150 ease-in-out"
+            //              >
+            //                View
+            //              </button>
+            //              <button
+            //                onClick={() => handleDelete(pdf.id)}
+            //                className="flex-1 sm:flex-none px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition duration-150 ease-in-out"
+            //              >
+            //                <FontAwesomeIcon icon={faTrash} />
+            //              </button>
+            //            </div>
+            //          </li>
+            //        ))}
+            //      </ul>
+            //        ) : (
+            //          <p className="text-center text-gray-500">No PDFs available</p>
+            //        )}
+            //      </div>
+            //    )}
+            //  </div>
+            <Showpdf/>
             )}
             {activeTab === "contact" && <ContactUsPage />}
             {/* {activeTab === "Servings" && (

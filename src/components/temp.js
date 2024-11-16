@@ -52,7 +52,6 @@ const ManageSubscriptionPage = () => {
       const parsedata = JSON.parse(userdata)
       setUserData(parsedata)
       // setUserData(response.data);
-      // console.log(userData.name)
    
      
     }

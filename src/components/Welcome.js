@@ -306,7 +306,9 @@ const dislike = localStorage.getItem('dislike')
 const dietaryRestrictions = localStorage.getItem('dietaryRestrictions')
 
 const generateAndSendPDF = async (email) => {
- 
+  const user = await localStorage.getItem("user");
+    const parsedUser = JSON.parse(user); // Convert string to object
+    const userId = parsedUser.user_id;
   
 
   try {
@@ -319,6 +321,7 @@ const generateAndSendPDF = async (email) => {
         allergies: allergys,
         dislikes: dislike,
         dietaryRestrictions: dietaryRestrictions,
+        id:userId
       }),
     });
 
