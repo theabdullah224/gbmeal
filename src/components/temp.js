@@ -87,7 +87,7 @@ const ManageSubscriptionPage = () => {
       setMessage(error.response?.data?.error || 'An error occurred while canceling the plan.');
     } finally {
       setLoading(false);
-      window.location.reload()
+    
     }
   };
 
