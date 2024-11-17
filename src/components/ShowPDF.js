@@ -12,9 +12,9 @@ const UserPDFViewer = () => {
     const user = await localStorage.getItem("user");
     const parsedUser = JSON.parse(user); // Convert string to object
     const userId = parsedUser.user_id;
-   
+    
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/user/${userId}/pdfs`);
+      const response = await fetch(`https://meeel.xyz/api/user/${userId}/pdfs`);
       const data = await response.json();
       
       if (!response.ok) throw new Error(data.message);
@@ -54,7 +54,7 @@ const UserPDFViewer = () => {
     if (!window.confirm('Are you sure you want to delete this PDF?')) return;
     
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/pdfs/${pdfId}`, {
+      const response = await fetch(`https://meeel.xyz/api/pdfs/${pdfId}`, {
         method: 'DELETE',
       });
       

@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv('SQL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://neondb_owner:1ZSrp6RiwONU@ep-lively-hill-a5h86jid.us-east-2.aws.neon.tech/neondb?sslmode=require'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 logger = logging.getLogger(__name__)
 db =SQLAlchemy(app)

@@ -52,8 +52,8 @@ from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
 
 
 
-config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-
+# config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
 # Load environment variables from a .env file
 load_dotenv()
 
@@ -64,7 +64,8 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWTSECRET')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30) 
 jwt = JWTManager(app)
 
-CORS(app)
+CORS(app, resources={r"/*": {"methods": ["GET", "PUT", "POST", "DELETE"]}})
+
 api = Blueprint('api', __name__)
 from flask_migrate import Migrate
 
@@ -1386,7 +1387,7 @@ You are a meal planning assistant. Provide the meal plan in HTML format only, wi
         
         pdf_urls = upload_pdfs_to_s3(current_user, meal_plan_base64, shopping_list_base64)
 
-        print(pdf_urls,"--------------------------------")
+        
 
         return jsonify({
             "meal_plan_pdf": meal_plan_base64,
