@@ -165,12 +165,15 @@ function Pref() {
 
   const [menuStates, setMenuStates] = useState({
     servings: { open: false, selected: parsedUserData?.servings  } ,
-    allergy: { open: false, selected: parsedUserData?.food_allergy },
+    allergy: { open: false, selected: parsedUserData?.food_allergy.replace(/[{}"]/g, '')  || [], inputValue: '' },
     preference: { open: false, selected: parsedUserData?.total_calories },
-    dislike: { open: false, selected: parsedUserData?.dislikes },
+    dislike: { open: false, selected: parsedUserData?.dislikes.replace(/[{}"]/g, '') ||  [], inputValue: ''},
     mealPlan: { open: false, selected: parsedUserData?.dietary_restriction },
     familyMembers: { open: false, selected: parsedUserData?.preferred_meal },
   });
+
+
+
   const handleInputChange = (menu, value) => {
     setMenuStates({
       ...menuStates,
@@ -180,51 +183,112 @@ function Pref() {
       }
     });
   };
+  const handleInputKeyDown = (menu, e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      e.preventDefault();
+      addCustomOption(menu, e.target.value.trim());
+    }
+  };
+
+  const addCustomOption = (menu, value) => {
+    if (!value) return;
+    
+    setMenuStates(prev => {
+      const currentSelected = Array.isArray(prev[menu].selected) ? prev[menu].selected : [];
+      if (!currentSelected.includes(value)) {
+        return {
+          ...prev,
+          [menu]: {
+            ...prev[menu],
+            selected: [...currentSelected, value],
+            inputValue: ''
+          }
+        };
+      }
+      return prev;
+    });
+  };
+
+  const handleOptionSelect = (menu, option) => {
+    if (menu === 'allergy' || menu === 'dislike') {
+      setMenuStates(prev => {
+        const currentSelected = Array.isArray(prev[menu].selected) ? prev[menu].selected : [];
+        const updatedSelected = currentSelected.includes(option)
+          ? currentSelected.filter(item => item !== option)
+          : [...currentSelected, option];
+        
+        return {
+          ...prev,
+          [menu]: {
+            ...prev[menu],
+            selected: updatedSelected,
+            open: true // Keep the menu open for multi-select
+          }
+        };
+      });
+    } else {
+      // Original single-select behavior for other menus
+      setMenuStates((prevState) => ({
+        ...prevState,
+        [menu]: { open: false, selected: option },
+      }));
+    }
+  };
+
+ 
+
   const renderMenuItem = (menu, title, placeholder, options) => (
-    <li className="relative ">
+    <li className="relative">
       <span className="text-base font-roboto font-bold">{title}</span>
       <button
         onClick={() => isEditable && handleMenuClick(menu)}
-        className={`text-sm text-Text2 border-2 rounded-lg border-[#A6AE9D]  px-4 py-3 w-[75vw] sm:w-[30rem] flex justify-between items-center ${
+        className={`text-sm text-Text2 border-2 rounded-lg border-[#A6AE9D] px-4 py-3 w-[75vw] sm:w-[30rem] flex justify-between items-center ${
           !isEditable && "opacity-50 cursor-not-allowed"
         }`}
         disabled={!isEditable}
       >
-        {menuStates[menu].selected || placeholder}{" "}
+        {(menu === 'allergy' || menu === 'dislike') && Array.isArray(menuStates[menu].selected) 
+          ? menuStates[menu].selected.join(', ')
+          : menuStates[menu].selected || placeholder}
         <span>
           <img src={downarrow} className="w-5 ml-3" alt="" />
         </span>
       </button>
       {menuStates[menu].open && (
         <ul className="absolute z-40 left-0 mt-2 bg-white border border-gray-300 w-full px-2 py-2">
-          {title === "Tell us about your food allergy" &&(
-           <input
-           type="text"
-           value={menuStates[menu].inputValue || ""}
-           onChange={(e) => handleInputChange(menu, e.target.value)} 
-           onBlur={() => handleOptionSelect(menu, menuStates[menu].inputValue)}  // Auto-select on blur (when input loses focus)
-           className="w-full border-2 py-2 text-xs sm:text-sm rounded-md sm:rounded-lg px-2"
-           placeholder="Tell us about your food allergy"
-         />
+          {(title === "Tell us about your food allergy" || title === "Tell us about the food you dislike") && (
+            <input
+              type="text"
+              value={menuStates[menu].inputValue || ""}
+              onChange={(e) => handleInputChange(menu, e.target.value)}
+              onKeyDown={(e) => handleInputKeyDown(menu, e)}
+              className="w-full border-2 py-2 text-xs sm:text-sm rounded-md sm:rounded-lg px-2 mb-2"
+              placeholder={`Type and press Enter to add custom ${menu === 'allergy' ? 'allergy' : 'dislike'}`}
+            />
           )}
-          {title === "Tell us about the food you dislike" &&(
-           <input
-           type="text"
-           value={menuStates[menu].inputValue || ""}
-           onChange={(e) => handleInputChange(menu, e.target.value)} 
-           onBlur={() => handleOptionSelect(menu, menuStates[menu].inputValue)}  // Auto-select on blur (when input loses focus)
-           className="w-full border-2 py-2 text-xs sm:text-sm rounded-md sm:rounded-lg px-2"
-           placeholder="Tell us about the food you dislike"
-         />
-          )}
+          
           {options.map((option) => (
             <li key={option}>
-              <span
-                onClick={() => handleOptionSelect(menu, option)}
-                className="block px-4 py-2 hover:bg-gray-300 cursor-pointer"
-              >
-                {option}
-              </span>
+              {(title === "Tell us about your food allergy" || title === "Tell us about the food you dislike") ? (
+                <div className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={Array.isArray(menuStates[menu].selected) && menuStates[menu].selected.includes(option)}
+                    onChange={() => handleOptionSelect(menu, option)}
+                    className="mr-2"
+                  />
+                  <span onClick={() => handleOptionSelect(menu, option)}>
+                    {option}
+                  </span>
+                </div>
+              ) : (
+                <span
+                  onClick={() => handleOptionSelect(menu, option)}
+                  className="block px-4 py-2 hover:bg-gray-300 cursor-pointer"
+                >
+                  {option}
+                </span>
+              )}
             </li>
           ))}
         </ul>
@@ -290,12 +354,12 @@ function Pref() {
     }
   };
 
-  const handleOptionSelect = (menu, option) => {
-    setMenuStates((prevState) => ({
-      ...prevState,
-      [menu]: { open: false, selected: option },
-    }));
-  };
+  // const handleOptionSelect = (menu, option) => {
+  //   setMenuStates((prevState) => ({
+  //     ...prevState,
+  //     [menu]: { open: false, selected: option },
+  //   }));
+  // };
   const handleMenuClick = (menu) => {
     setMenuStates((prevState) => ({
       ...prevState,
@@ -647,274 +711,6 @@ function Pref() {
 
  
  
-  // const generatePDF = async (htmlData, logoUrl = null) => {
-  //   try {
-  //     // Initialize PDF document
-  //     const pdf = new jsPDF({
-  //       unit: 'pt',
-  //       format: 'a4',
-  //       orientation: 'portrait'
-  //     });
-  
-  //     // Define constants
-  //     const pageWidth = pdf.internal.pageSize.getWidth();
-  //     const pageHeight = pdf.internal.pageSize.getHeight();
-  //     const margin = {
-  //       top: 40,
-  //       right: 40,
-  //       bottom: 40,
-  //       left: 40
-  //     };
-  
-  //     let yOffset = margin.top;
-  
-  //     // Custom colors
-  //     const colors = {
-  //       headerBg: [116, 128, 98],    // #748062
-  //       textDark: [51, 51, 51],      // #333333
-  //       textLight: [255, 255, 255],  // #FFFFFF
-  //       borderColor: [163, 163, 163],// #a3a3a3
-  //       bgLight: [249, 249, 249]     // #f9f9f9
-  //     };
-  
-  //     // Add logo if provided
-  //     if (logoUrl) {
-  //       try {
-  //         const logoImg = new Image();
-  //         logoImg.src = logoUrl;
-  //         await new Promise((resolve, reject) => {
-  //           logoImg.onload = resolve;
-  //           logoImg.onerror = reject;
-  //         });
-  
-  //         const maxLogoWidth = 150;
-  //         let logoWidth = logoImg.width;
-  //         let logoHeight = logoImg.height;
-          
-  //         if (logoWidth > maxLogoWidth) {
-  //           const ratio = maxLogoWidth / logoWidth;
-  //           logoWidth = maxLogoWidth;
-  //           logoHeight *= ratio;
-  //         }
-  
-  //         const logoX = (pageWidth - logoWidth) / 2;
-  //         pdf.addImage(logoImg, 'PNG', logoX, yOffset, logoWidth, logoHeight);
-  //         yOffset += logoHeight + 30;
-  //       } catch (error) {
-  //         console.error('Error adding logo:', error);
-  //       }
-  //     }
-  
-  //     // Helper function to draw table header
-  //     const drawTableHeader = (headers, startY, columnWidths) => {
-  //       let x = margin.left;
-  //       pdf.setFillColor(...colors.headerBg);
-  //       pdf.setTextColor(...colors.textLight);
-  //       pdf.setFont('helvetica', 'bold');
-  //       pdf.setFontSize(10);
-  
-  //       headers.forEach((header, index) => {
-  //         // Add validation for rect parameters
-  //         if (isNaN(x) || isNaN(startY) || isNaN(columnWidths[index]) || 
-  //             x === null || startY === null || columnWidths[index] === null) {
-  //           throw new Error('Invalid parameters for rectangle drawing');
-  //         }
-  
-  //         pdf.rect(x, startY, columnWidths[index], 30, 'F');
-  //         pdf.rect(x, startY, columnWidths[index], 30, 'S');
-          
-  //         const text = header.toUpperCase();
-  //         const textWidth = pdf.getStringUnitWidth(text) * 10;
-  //         const textX = x + (columnWidths[index] - textWidth) / 2;
-  //         pdf.text(text, textX, startY + 20);
-          
-  //         x += columnWidths[index];
-  //       });
-  
-  //       return startY + 30;
-  //     };
-  
-  //     // Helper function to draw cell with wrapped text
-  //     const drawCell = (text, x, y, width, height) => {
-  //       const words = text.split(' ');
-  //       let line = '';
-  //       let lineHeight = 12;
-  //       let currentY = y + 15;
-  
-  //       pdf.setFontSize(10);
-  //       words.forEach(word => {
-  //         const testLine = line + (line ? ' ' : '') + word;
-  //         const testWidth = pdf.getStringUnitWidth(testLine) * 10;
-          
-  //         if (testWidth > width - 20 && line !== '') {
-  //           pdf.text(line, x + 10, currentY);
-  //           line = word;
-  //           currentY += lineHeight;
-  //         } else {
-  //           line = testLine;
-  //         }
-  //       });
-        
-  //       if (line !== '') {
-  //         pdf.text(line, x + 10, currentY);
-  //       }
-  
-  //       return Math.max(height, currentY - y + lineHeight);
-  //     };
-  
-  //     // Process main meal table
-  //     const processMealTable = () => {
-  //       const columnWidths = [
-  //         (pageWidth - margin.left - margin.right) / 3,
-  //         (pageWidth - margin.left - margin.right) / 3,
-  //         (pageWidth - margin.left - margin.right) / 3
-  //       ];
-  
-  //       // Draw main table header
-  //       yOffset = drawTableHeader(['Meals', 'Ingredients', 'Instructions'], yOffset, columnWidths);
-  
-  //       // Parse the HTML content
-  //       const parser = new DOMParser();
-  //       const doc = parser.parseFromString(htmlData, 'text/html');
-  //       const mealRows = doc.querySelectorAll('table:first-of-type tbody tr');
-  
-  //       mealRows.forEach(row => {
-  //         const cells = row.querySelectorAll('td');
-  //         let maxHeight = 0;
-  //         let rowHeight = 200; // Default row height
-  
-  //         // Calculate required height based on content
-  //         cells.forEach((cell, index) => {
-  //           const cellContent = cell.textContent.trim();
-  //           const lines = Math.ceil(cellContent.length / 40); // Rough estimate
-  //           const estimatedHeight = lines * 15; // 15pt per line
-  //           rowHeight = Math.max(rowHeight, estimatedHeight);
-  //         });
-  
-  //         // Process each cell
-  //         cells.forEach((cell, index) => {
-  //           const x = margin.left + (columnWidths[index] * index);
-            
-  //           // Validate parameters before drawing rectangle
-  //           if (isNaN(x) || isNaN(yOffset) || isNaN(columnWidths[index]) || isNaN(rowHeight)) {
-  //             console.error('Invalid rectangle parameters:', { x, y: yOffset, width: columnWidths[index], height: rowHeight });
-  //             return;
-  //           }
-  
-  //           pdf.setFillColor(...colors.bgLight);
-  //           pdf.rect(x, yOffset, columnWidths[index], rowHeight, 'F');
-  
-  //           pdf.setTextColor(...colors.textDark);
-  //           pdf.setFont('helvetica', 'normal');
-  
-  //           const cellHeight = drawCell(
-  //             cell.textContent.trim(),
-  //             x,
-  //             yOffset,
-  //             columnWidths[index],
-  //             rowHeight
-  //           );
-  
-  //           maxHeight = Math.max(maxHeight, cellHeight);
-  //         });
-  
-  //         yOffset += maxHeight;
-  //       });
-  
-  //       // Add some spacing
-  //       yOffset += 30;
-  //     };
-  
-  //     // Process grocery list table
-  //     const processGroceryTable = () => {
-  //       // Check if new page needed
-  //       if (yOffset + 400 > pageHeight) {
-  //         pdf.addPage();
-  //         yOffset = margin.top;
-  //       }
-  
-  //       const columnWidths = [
-  //         (pageWidth - margin.left - margin.right) * 0.3,
-  //         (pageWidth - margin.left - margin.right) * 0.7
-  //       ];
-  
-  //       // Draw grocery table header
-  //       yOffset = drawTableHeader(['Meal', 'Grocery Items to Purchase'], yOffset, columnWidths);
-  
-  //       // Parse grocery table
-  //       const parser = new DOMParser();
-  //       const doc = parser.parseFromString(htmlData, 'text/html');
-  //       const groceryRows = doc.querySelectorAll('table:last-of-type tbody tr');
-  
-  //       groceryRows.forEach(row => {
-  //         const cells = row.querySelectorAll('td');
-  //         let maxHeight = 0;
-  //         let rowHeight = 150; // Default row height
-  
-  //         // Calculate required height based on content
-  //         cells.forEach((cell, index) => {
-  //           const cellContent = cell.textContent.trim();
-  //           const lines = Math.ceil(cellContent.length / 40); // Rough estimate
-  //           const estimatedHeight = lines * 15; // 15pt per line
-  //           rowHeight = Math.max(rowHeight, estimatedHeight);
-  //         });
-  
-  //         cells.forEach((cell, index) => {
-  //           const x = margin.left + (columnWidths[index] * index);
-            
-  //           // Validate parameters before drawing rectangle
-  //           if (isNaN(x) || isNaN(yOffset) || isNaN(columnWidths[index]) || isNaN(rowHeight)) {
-  //             console.error('Invalid rectangle parameters:', { x, y: yOffset, width: columnWidths[index], height: rowHeight });
-  //             return;
-  //           }
-  
-  //           pdf.setFillColor(...colors.bgLight);
-  //           pdf.rect(x, yOffset, columnWidths[index], rowHeight, 'F');
-  
-  //           pdf.setTextColor(...colors.textDark);
-  //           pdf.setFont('helvetica', 'normal');
-  
-  //           const cellHeight = drawCell(
-  //             cell.textContent.trim(),
-  //             x,
-  //             yOffset,
-  //             columnWidths[index],
-  //             rowHeight
-  //           );
-  
-  //           maxHeight = Math.max(maxHeight, cellHeight);
-  //         });
-  
-  //         yOffset += maxHeight;
-  //       });
-  //     };
-  
-  //     // Generate the PDF content
-  //     processMealTable();
-  //     processGroceryTable();
-  
-  //     // Add page numbers
-  //     const totalPages = pdf.internal.getNumberOfPages();
-  //     for (let i = 1; i <= totalPages; i++) {
-  //       pdf.setPage(i);
-  //       pdf.setFontSize(9);
-  //       pdf.setTextColor(128, 128, 128);
-  //       pdf.text(
-  //         `Page ${i} of ${totalPages}`,
-  //         pageWidth - margin.right - 60,
-  //         pageHeight - margin.bottom / 2
-  //       );
-  //     }
-  
-  //     // Save the PDF
-  //     pdf.save('meal-plan.pdf');
-  //     console.log('Meal Plan PDF generated successfully');
-  
-  //   } catch (error) {
-  //     console.error('Error generating meal plan PDF:', error);
-  //     throw error;
-  //   }
-  // };
 
   function base64ToBlob(base64, type) {
     const byteCharacters = atob(base64);
