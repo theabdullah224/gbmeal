@@ -750,11 +750,7 @@ function Pref() {
                 menuStates.allergy.selected ||
                   "Enter/select allergy if you have any",
                   
-                [
-                  "Peanuts",
-                  "Gluten",
-                  "Dairy",
-                  "Shell fish",
+                [                  
                   "Eggs",
                   "Cheese",
                   "Tofu",
