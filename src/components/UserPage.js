@@ -75,7 +75,8 @@ function UserPage() {
   const [dislike, setdislike] = useState("");
   const [diatryrestriction, setdiatryrestriction] = useState("");
   const [pdfs, setPdfs] = useState([]);
- 
+  const [days, setDays] = useState("") 
+  const [mealperday, setMealperday] = useState("")
   const [pdfList, setPdfList] = useState([]);
   // const { isLoggedIn } = useStore();
   // const [name, setName] = useState("");
@@ -231,9 +232,11 @@ function UserPage() {
         headers: { Authorization: userId.toString() },
       });
 
+
+        console.log(response.data)
       if (response.data && typeof response.data === "object") {
         setUserData(response.data);
-
+        console.log(response.data)
         setName(response.data.name || "Not available");
         setemail(response.data.email || "Not available");
         setServings(response.data.servings || "Not available");
@@ -243,7 +246,8 @@ function UserPage() {
         );
         setdislike(response.data.dislikes || "Not available");
         setfamilymember(response.data.preferred_meal || "Not available");
-
+        setDays(response.data.days)
+        setMealperday(response.data.mealperday)
         setcolories(response.data.total_calories || "Not available");
         localStorage.setItem("userdata", JSON.stringify(response.data));
 
@@ -1063,55 +1067,13 @@ onClick={handleEmailEditClick}
           } lg:w-72`}></div>
         {/* Main content */}
 
-        <div className="flex-1  h-fit sm:h-screen   flex items-start justify-start lg:ml-8  py-2 sm:py-2">
+        <div className="flex-1  h-fit sm:h-fit   flex items-start justify-start lg:ml-8  py-2 sm:py-2">
 
 
           <div className="flex-1   sm:p-8  bg-white  overflow-hidden max-w-4xl w-fit   items-start justify-start flex  h-fit  sm:mx-6   overflow-y-auto ">
-            {/* {activeTab === "name" && (
-              <div className="name  flex items-center justify-center p-4">
-                
-              </div>
-            )} */}
+         
 
-            {/* {activeTab === "email" && (
-              <div className="email  flex items-center justify-center p-4">
-                <div className="flex flex-col items-start w-full max-w-sm">
-                  <div className="flex items-center justify-between w-full mb-2">
-                    <label
-                      htmlFor="email"
-                      className="text-gray-700 font-semibold"
-                    >
-                      Email
-                    </label>
-                    <Edit
-                      className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500"
-                      onClick={handleEditClick}
-                    />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    ref={inputRef}
-                    className={`border-2 border-Text2 py-3 px-4 bg-transparent rounded-lg w-full placeholder-Text2 text-Text2 focus:outline-none focus:ring-2 focus:ring-transparent transition duration-300 ${
-                      isEditable
-                        ? "border-P-Green1 bg-white"
-                        : "border-gray-300 bg-gray-100"
-                    }`}
-                    value={email}
-                    disabled={!isEditable}
-                    onChange={(e) => setemail(e.target.value)}
-                  />
-                  {isEditable && (
-                    <button
-                      className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base"
-                      onClick={handleSaveEmailClick}
-                    >
-                      {save}
-                    </button>
-                  )}
-                </div>
-              </div>
-            )} */}
+           
             {activeTab === "payment" && <Temp />}
             {activeTab === "account" && (
               <div className=" py-4 flex items-center justify-center ">
@@ -1130,251 +1092,11 @@ onClick={handleEmailEditClick}
               </div>
             )}
             {activeTab === "pdf" && (
-            //    <div className="container mx-auto px-4 py-8 h-full">
-            //    <h1 className="text-3xl font-bold mb-6 text-gray-800">My Resources</h1>
-            //    {isLoggedIn && (
-            //      <div className="overflow-y-auto max-h-[30rem]">
-            //        {pdfList.length > 0 ? (
-            //        <ul className="space-y-4 w-full max-w-4xl ">
-            //        {pdfList.map((pdf) => (
-            //          <li 
-            //            key={pdf.id} 
-            //            className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-50 px-3 sm:px-4 py-3 rounded-md hover:bg-gray-100 transition duration-150 ease-in-out"
-            //          >
-            //            <div className="flex items-center space-x-4 mb-2 sm:mb-0">
-            //              <FontAwesomeIcon icon={faFilePdf} className="text-P-Green1 text-xl sm:text-2xl flex-shrink-0" />
-            //              <div className="min-w-0 flex-1">
-            //                <p className="font-semibold text-gray-700 text-sm sm:text-base truncate  max-w-[8rem] sm:max-w-full">
-            //                  {pdf.name || "Unnamed PDF"}
-            //                </p>
-            //                <p className="text-xs sm:text-sm text-gray-500">
-            //                  {new Date(pdf.generatedDate).toLocaleDateString()}
-            //                </p>
-            //              </div>
-            //            </div>
-            //            <div className="flex space-x-2 w-full sm:w-auto justify-end mt-2 sm:mt-0">
-            //              <button
-            //                onClick={() => handlePdfClick(pdf.data)}
-            //                className="flex-1 sm:flex-none px-3 py-1 bg-P-Green1 text-white text-sm rounded hover:bg-blue-600 transition duration-150 ease-in-out"
-            //              >
-            //                View
-            //              </button>
-            //              <button
-            //                onClick={() => handleDelete(pdf.id)}
-            //                className="flex-1 sm:flex-none px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition duration-150 ease-in-out"
-            //              >
-            //                <FontAwesomeIcon icon={faTrash} />
-            //              </button>
-            //            </div>
-            //          </li>
-            //        ))}
-            //      </ul>
-            //        ) : (
-            //          <p className="text-center text-gray-500">No PDFs available</p>
-            //        )}
-            //      </div>
-            //    )}
-            //  </div>
+         
             <Showpdf/>
             )}
             {activeTab === "contact" && <ContactUsPage />}
-            {/* {activeTab === "Servings" && (
-              <div className="servings w-full h-full flex items-center justify-center p-4">
-              <div className="flex flex-col items-start w-full max-w-sm">
-                <div className="flex items-center justify-between w-full mb-2">
-                  <label htmlFor="servings" className="text-gray-700 font-semibold">Servings</label>
-                  <Edit className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" onClick={handleEditClick} />
-                </div>
-                <input
-                  id="servings"
-                  type="text"
-                  ref={inputRef}
-                  className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                    isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                  }`}
-                  value={servings}
-                  disabled={!isEditable}
-                  onChange={(e) => setServings(e.target.value)}
-                />
-                {isEditable && (
-                  <button className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" onClick={handleSaveServingsClick}>
-                    {save}
-                  </button>
-                )}
-              </div>
-            </div>
-            )}
-            {activeTab === "Allergy" && (
-               <div className="food-allergy w-full h-full flex items-center justify-center p-4">
-               <div className="flex flex-col items-start w-full max-w-sm">
-                 <div className="flex items-center justify-between w-full mb-2">
-                   <label htmlFor="food-allergy" className="text-gray-700 font-semibold">
-                     Food Allergy
-                   </label>
-                   <Edit 
-                     className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" 
-                     onClick={handleEditClick} 
-                   />
-                 </div>
-                 <input
-                   id="food-allergy"
-                   type="text"
-                   ref={inputRef}
-                   className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                     isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                   }`}
-                   value={allergy}  // Use local state for food allergy
-                   disabled={!isEditable}
-                   onChange={(e) => setallergy(e.target.value)}  // Update food allergy state
-                 />
-                 {isEditable && (
-                   <button 
-                     className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" 
-                     onClick={handleFoodAllergy}
-                   >
-                     {save}
-                   </button>
-                 )}
-               </div>
-             </div>
-             
-            )}
-            {activeTab === "dislike" && (
-               <div className="food-allergy w-full h-full flex items-center justify-center p-4">
-               <div className="flex flex-col items-start w-full max-w-sm">
-                 <div className="flex items-center justify-between w-full mb-2">
-                   <label htmlFor="food-allergy" className="text-gray-700 font-semibold">
-                     Dislike
-                   </label>
-                   <Edit 
-                     className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" 
-                     onClick={handleEditClick} 
-                   />
-                 </div>
-                 <input
-                   id="dislike"
-                   type="text"
-                   ref={inputRef}
-                   className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                     isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                   }`}
-                   value={dislike}  // Use local state for food allergy
-                   disabled={!isEditable}
-                   onChange={(e) => setdislike(e.target.value)}  // Update food allergy state
-                 />
-                 {isEditable && (
-                   <button 
-                     className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" 
-                     onClick={handledislike}
-                   >
-                     {save}
-                   </button>
-                 )}
-               </div>
-             </div>
-            )}
-            {activeTab === "preferredmeal" && (
-              <div className="food-allergy w-full h-full flex items-center justify-center p-4">
-              <div className="flex flex-col items-start w-full max-w-sm">
-                <div className="flex items-center justify-between w-full mb-2">
-                  <label htmlFor="food-allergy" className="text-gray-700 font-semibold">
-                    Preferred Meal
-                  </label>
-                  <Edit 
-                    className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" 
-                    onClick={handleEditClick} 
-                  />
-                </div>
-                <input
-                  id="dislike"
-                  type="text"
-                  ref={inputRef}
-                  className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                    isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                  }`}
-                  value={diatryrestriction}  // Use local state for food allergy
-                  disabled={!isEditable}
-                  onChange={(e) => setdiatryrestriction(e.target.value)}  // Update food allergy state
-                />
-                {isEditable && (
-                  <button 
-                    className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" 
-                    onClick={handlepreferredmeal}
-                  >
-                    {save}
-                  </button>
-                )}
-              </div>
-            </div>
-            )}
-            {activeTab === "family" && (
-               <div className="food-allergy w-full h-full flex items-center justify-center p-4">
-               <div className="flex flex-col items-start w-full max-w-sm">
-                 <div className="flex items-center justify-between w-full mb-2">
-                   <label htmlFor="food-allergy" className="text-gray-700 font-semibold">
-                     Family Members
-                   </label>
-                   <Edit 
-                     className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" 
-                     onClick={handleEditClick} 
-                   />
-                 </div>
-                 <input
-                   id="dislike"
-                   type="text"
-                   ref={inputRef}
-                   className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                     isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                   }`}
-                   value={familymember}  // Use local state for food allergy
-                   disabled={!isEditable}
-                   onChange={(e) => setfamilymember(e.target.value)}  // Update food allergy state
-                 />
-                 {isEditable && (
-                   <button 
-                     className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" 
-                     onClick={handlefamily}
-                   >
-                     {save}
-                   </button>
-                 )}
-               </div>
-             </div>
-            )}
-            {activeTab === "calories" && (
-               <div className="food-allergy w-full h-full flex items-center justify-center p-4">
-               <div className="flex flex-col items-start w-full max-w-sm">
-                 <div className="flex items-center justify-between w-full mb-2">
-                   <label htmlFor="food-allergy" className="text-gray-700 font-semibold">
-                     Calories
-                   </label>
-                   <Edit 
-                     className="w-5 h-5 text-gray-600 cursor-pointer hover:text-blue-500" 
-                     onClick={handleEditClick} 
-                   />
-                 </div>
-                 <input
-                   id="dislike"
-                   type="text"
-                   ref={inputRef}
-                   className={`border-2 w-full px-3 py-2 rounded-lg transition-colors duration-200 ${
-                     isEditable ? 'border-blue-500 bg-white' : 'border-gray-300 bg-gray-100'
-                   }`}
-                   value={colories}  // Use local state for food allergy
-                   disabled={!isEditable}
-                   onChange={(e) => setcolories(e.target.value)}  // Update food allergy state
-                 />
-                 {isEditable && (
-                   <button 
-                     className="mt-2 py-2 px-4 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base" 
-                     onClick={handlecolories}
-                   >
-                     {save}
-                   </button>
-                 )}
-               </div>
-             </div>
-            )} */}
+          
             {activeTab === "pdfgenerate" && <Pref />}
           </div>
 

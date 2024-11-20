@@ -304,6 +304,7 @@ const servings = localStorage.getItem('servings')
 const allergys = localStorage.getItem('allergy')
 const dislike = localStorage.getItem('dislike')
 const dietaryRestrictions = localStorage.getItem('dietaryRestrictions')
+const mealperday = localStorage.getItem('mealperday')
 
 const generateAndSendPDF = async (email) => {
   const user = await localStorage.getItem("user");
@@ -316,37 +317,26 @@ const generateAndSendPDF = async (email) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        preferredMeal: "nothing",
-        servings: servings,
-        allergies: allergys,
-        dislikes: dislike,
-        dietaryRestrictions: dietaryRestrictions,
+       
+        servings: servings || "",
+        allergies: allergys || "",
+        dislikes: dislike || "",
+        dietaryRestrictions: dietaryRestrictions || "",
+        total_calories:'recomended',
+        mealperday: mealperday || "",
+        days:"6",
         id:userId
       }),
     });
 
     const generateData = await generateResponse.json();
 
-  //   const { pdf } = generateData;
-  //   // Convert base64 PDF string to Blob
-  //   const pdfBlob = base64ToBlob(pdf, "application/pdf");
-   
+
   
-  // // Create a URL for the Blob
-  // const pdfUrl = URL.createObjectURL(pdfBlob);
   
-  // // Create a link element
-  // const link = document.createElement("a");
-  // link.href = pdfUrl;
-  // link.download = "meal_plan.pdf"; // Specify the filename
   
-  // // Append to the document, click and remove
-  // document.body.appendChild(link);
-  // link.click();
-  // document.body.removeChild(link);
   
-  // // Optionally, revoke the object URL after the download
-  // URL.revokeObjectURL(pdfUrl);
+  
   const mealPlanBlob = base64ToBlob(generateData.meal_plan_pdf, "application/pdf");
     const mealPlanUrl = URL.createObjectURL(mealPlanBlob);
     const mealPlanLink = document.createElement("a");

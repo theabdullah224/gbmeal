@@ -41,6 +41,8 @@ class User(db.Model):
     servings = db.Column(db.String(255))  # New column
     dislikes = db.Column(db.String(255))  # New column
     total_calories = db.Column(db.String(255))
+    mealperday = db.Column(db.String(255))
+    days = db.Column(db.String(255))
     pdfs = relationship('user_pdf', backref='user', lazy=True)
 
 

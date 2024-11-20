@@ -163,6 +163,8 @@ function Pref() {
   const userdata = localStorage.getItem("userdata");
   const parsedUserData = JSON.parse(userdata);
 
+
+    
   const [menuStates, setMenuStates] = useState({
     servings: { open: false, selected: parsedUserData?.servings  } ,
     allergy: { open: false, selected: parsedUserData?.food_allergy.replace(/[{}"]/g, '')  || [], inputValue: '' },
@@ -170,9 +172,12 @@ function Pref() {
     dislike: { open: false, selected: parsedUserData?.dislikes.replace(/[{}"]/g, '') ||  [], inputValue: ''},
     mealPlan: { open: false, selected: parsedUserData?.dietary_restriction },
     familyMembers: { open: false, selected: parsedUserData?.preferred_meal },
+    days: { open: false, selected: parsedUserData?.days },
+    MealPerDay: { open: false, selected: parsedUserData?.mealperday },
   });
 
 
+  console.log(parsedUserData?.mealperday)
 
   const handleInputChange = (menu, value) => {
     setMenuStates({
@@ -239,10 +244,10 @@ function Pref() {
 
   const renderMenuItem = (menu, title, placeholder, options) => (
     <li className="relative">
-      <span className="text-base font-roboto font-bold">{title}</span>
+      <span className="text-base font-roboto font-bold truncate">{title}</span>
       <button
         onClick={() => isEditable && handleMenuClick(menu)}
-        className={`text-sm text-Text2 border-2 rounded-lg border-[#A6AE9D] px-4 py-3 w-[75vw] sm:w-[30rem] flex justify-between items-center ${
+        className={`text-sm text-Text2 border-2 rounded-lg border-[#A6AE9D] px-4 py-3 w-[75vw] sm:w-[30rem] flex justify-between items-center truncate  ${
           !isEditable && "opacity-50 cursor-not-allowed"
         }`}
         disabled={!isEditable}
@@ -321,7 +326,8 @@ function Pref() {
         dislikes: menuStates.dislike.selected || "",
         dietary_restriction: menuStates.mealPlan.selected || "",
         total_calories: menuStates.preference.selected || "",
-        // Note: 'members' field is not used in the backend, so we're omitting it
+        days:menuStates.days.selected || "",
+        mealperday:menuStates.MealPerDay.selected || ""
       };
 
       const response = await fetch("https://meeel.xyz/update", {
@@ -408,37 +414,20 @@ function Pref() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          preferredMeal: menuStates.preference.selected || "nothing",
+         
           servings: menuStates.servings.selected || "2 servings",
           allergies: menuStates.allergy.selected || "nothing",
           dislikes: menuStates.dislike.selected || "nothing",
           dietaryRestrictions: menuStates.mealPlan.selected || "nothing",
           total_calories:menuStates.preference.selected || "blank",
+          mealperday:menuStates.MealPerDay.selected || "blank",
+          days:"6 days",
           id:userId
         }),
       });
 
       const generateData = await generateResponse.json();
-    //   const { pdf } = generateData;
-  
-    //   const pdfBlob = base64ToBlob(pdf, "application/pdf");
-     
     
-    
-    // const pdfUrl = URL.createObjectURL(pdfBlob);
-    
-    
-    // const link = document.createElement("a");
-    // link.href = pdfUrl;
-    // link.download = "meal_plan.pdf"; 
-    
-   
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    
- 
-    // URL.revokeObjectURL(pdfUrl);
     const mealPlanBlob = base64ToBlob(generateData.meal_plan_pdf, "application/pdf");
     const mealPlanUrl = URL.createObjectURL(mealPlanBlob);
     const mealPlanLink = document.createElement("a");
@@ -569,146 +558,8 @@ function Pref() {
       }
     }
   };
-  const savePDFToLocalStorage = (pdfData,pdfname) => {
-    try {
-      const pdfList = JSON.parse(localStorage.getItem("pdfList")) || [];
-      const currentDate = new Date();
-      
-      const newPDF = {
-        id: Date.now(),
-        name: `${pdfname}.pdf`,
-        data: pdfData,
-        generatedDate: currentDate.toISOString(),
-      };
 
-      // Limit to storing only the last 5 PDFs
-      // if (pdfList.length >= 5) {
-      // }
-      // pdfList.shift(); // Remove the oldest PDF
-
-      pdfList.push(newPDF);
-      localStorage.setItem("pdfList", JSON.stringify(pdfList));
-    } catch (error) {
-      // console.error("Error saving PDF to localStorage:", error);
-      // Handle the error (e.g., show a message to the user)
-    }
-  };
-  const generateShoppingList = (mealPlanData) => {
-    const doc = new jsPDF();
-
-    // Parse the meal plan data and extract ingredients for both Main Dish and Side Dish
-    const ingredientsData = parseMealPlanData(mealPlanData.meal_plan);
-
-    const categorizedIngredients = ingredientsData.flatMap((dayRow) =>
-      dayRow.slice(1).flatMap((meal) => {
-        const ingredientsSection = meal.match(
-          /Ingredients:\n([\s\S]*?)(?=\n\nInstructions:|$)/
-        );
-        const ingredients = ingredientsSection
-          ? ingredientsSection[1].trim().split("\n")
-          : [];
-
-        let currentCategory = "mainDish";
-        const mainDishIngredients = [];
-        const sideDishIngredients = [];
-
-        // Categorize ingredients as Main Dish or Side Dish
-        ingredients.forEach((ingredient) => {
-          if (ingredient.toLowerCase().includes("main dish:")) {
-            currentCategory = "mainDish";
-          } else if (ingredient.toLowerCase().includes("side dish:")) {
-            currentCategory = "sideDish";
-          } else if (ingredient.trim() !== "") {
-            if (currentCategory === "mainDish") {
-              mainDishIngredients.push(ingredient.trim());
-            } else {
-              sideDishIngredients.push(ingredient.trim());
-            }
-          }
-        });
-
-        return {
-          mainDish: mainDishIngredients,
-          sideDish: sideDishIngredients,
-        };
-      })
-    );
-
-    // Function to clean up and format ingredients
-    const formatIngredients = (ingredients) => {
-      return ingredients
-        .map((item) => {
-          // Remove any existing numbering at the start
-          const cleanItem = item.replace(/^\d+\.\s*/, "").trim();
-          return cleanItem;
-        })
-        .filter((item, index, self) => self.indexOf(item) === index) // Remove duplicates
-        .map((item, index) => `${index + 1}. ${item}`) // Add clean numbering
-        .join("\n");
-    };
-
-    // Combine all main dish and side dish ingredients
-    const allMainDishIngredients = categorizedIngredients.flatMap(
-      (cat) => cat.mainDish
-    );
-    const allSideDishIngredients = categorizedIngredients.flatMap(
-      (cat) => cat.sideDish
-    );
-
-    // Format the ingredients
-    const formattedMainDish = formatIngredients(allMainDishIngredients);
-    const formattedSideDish = formatIngredients(allSideDishIngredients);
-
-    // Structure the table body (now just one row with two cells)
-    const tableBody = [[formattedMainDish, formattedSideDish]];
-
-    doc.setFontSize(20);
-    doc.text("Shopping List", 105, 18, null, null, "center");
-    doc.addImage(Logo, "PNG", 160, 8, 40, 10);
-
-    // Define the column headers for the table
-    const headers = [["Main Dish", "Side Dish"]];
-
-    // Create the table with two columns (Main Dish and Side Dish)
-    doc.autoTable({
-      head: headers,
-      body: tableBody,
-      startY: 25,
-      theme: "grid",
-      headStyles: {
-        fillColor: [115, 128, 101],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-        fontStyle: "bold",
-        valign: "middle",
-        halign: "center",
-      },
-      columnStyles: {
-        0: { cellWidth: (doc.internal.pageSize.width - 40) / 2 }, // Main Dish column
-        1: { cellWidth: (doc.internal.pageSize.width - 40) / 2 }, // Side Dish column
-      },
-      styles: {
-        fontSize: 10,
-        cellPadding: 5,
-      },
-      didParseCell: function (data) {
-        if (data.section === "body") {
-          data.cell.styles.cellPadding = 2;
-          data.cell.styles.valign = "top";
-        }
-      },
-    });
-
-    // Save and return the PDF
-    doc.setFontSize(10);
-    doc.text(``, 14, doc.lastAutoTable.finalY + 10);
-
-    const pdfData = doc.output("datauristring");
-    savePDFToLocalStorage(pdfData,"ShoppingList");
-    doc.save("ShoppingList.pdf");
-    return pdfData;
-  };
-
+  
  
  
 
@@ -739,10 +590,17 @@ function Pref() {
           <div className=" flex  flex-col justify-center items-center xl:justify-start xl:items-start">
             <ul className="w-full gap-4 flex flex-col xl:flex-row items-center xl:flex-wrap">
               {renderMenuItem(
+                "MealPerDay",
+                "How many Meals are required per Day?",
+                `${menuStates.MealPerDay.selected  || "Select Meal/day"}`,
+                [ "2 Meals", "3 Meals","4 Meals","5 Meals"]
+              )}
+             
+              {renderMenuItem(
                 "servings",
                 "How many servings are required",
                 `${menuStates.servings.selected || "Select servings"}`,
-                ["1 serving", "2 servings", "3 servings", "4 servings",]
+                ["1 person", "2 persons", "3 persons", "4 persons",]
               )}
               {renderMenuItem(
                 "allergy",

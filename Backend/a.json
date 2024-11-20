@@ -1,0 +1,1086 @@
+
+CompletionUsage(completion_tokens=10911, prompt_tokens=1397, total_tokens=12308, completion_tokens_details=CompletionTokensDetails(audio_tokens=0, reasoning_tokens=0, accepted_prediction_tokens=0, rejected_prediction_tokens=0), prompt_tokens_details=PromptTokensDetails(audio_tokens=0, cached_tokens=0))
+
+
+{
+  "mealPlan": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Quinoa Salad with Chickpeas",
+            "prepTime": "15 min",
+            "cookTime": "20 min",
+            "totalTime": "35 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Quinoa", "quantity": "150 g"},
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Cherry Tomatoes", "quantity": "150 g"},
+              {"name": "Red Onion", "quantity": "50 g"},
+              {"name": "Olive Oil", "quantity": "30 ml"},
+              {"name": "Lemon Juice", "quantity": "20 ml"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse 150 g quinoa under cold water. 2. Cook quinoa in 300 ml water over medium heat for about 15 minutes or until water is absorbed. 3. Drain 200 g canned chickpeas, then rinse. 4. Chop 100 g cucumber, 150 g cherry tomatoes, and 50 g red onion. 5. In a large bowl, combine cooked quinoa, chickpeas, cucumber, tomatoes, and onion. 6. Drizzle with 30 ml olive oil, 20 ml lemon juice, add 2 g salt and 1 g black pepper. 7. Toss everything together before serving."
+          },
+          "sideDish": {
+            "name": "Steamed Broccoli",
+            "prepTime": "5 min",
+            "cookTime": "10 min",
+            "totalTime": "15 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Broccoli", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Cut 200 g broccoli into florets. 2. Bring a pot of water to a boil. 3. Add broccoli and steam for about 10 minutes until tender. 4. Drain and drizzle with 10 ml olive oil and 1 g salt before serving."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Lentil Soup",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 700,
+            "ingredients": [
+              {"name": "Green Lentils", "quantity": "150 g"},
+              {"name": "Carrots", "quantity": "100 g"},
+              {"name": "Celery", "quantity": "50 g"},
+              {"name": "Onion", "quantity": "100 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Vegetable Broth", "quantity": "1 liter"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Dice 100 g onion, 100 g carrots, and 50 g celery. 2. Mince 2 garlic cloves. 3. Heat 15 ml olive oil in a pot and sauté onion, carrots, and celery for about 5 minutes. 4. Add minced garlic and 150 g green lentils. 5. Pour in 1 liter vegetable broth, 3 g salt, and 1 g black pepper. 6. Bring to a boil, then simmer for 30 minutes until lentils are tender."
+          },
+          "sideDish": {
+            "name": "Brown Rice",
+            "prepTime": "5 min",
+            "cookTime": "30 min",
+            "totalTime": "35 min",
+            "calories": 300,
+            "ingredients": [
+              {"name": "Brown Rice", "quantity": "100 g"},
+              {"name": "Water", "quantity": "250 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse 100 g brown rice under cold water. 2. Combine rice, 250 ml water, and 1 g salt in a pot. 3. Bring to a boil, then reduce heat and cover. 4. Cook for about 30 minutes or until water is absorbed."
+          }
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Chickpea Stir-Fry",
+            "prepTime": "10 min",
+            "cookTime": "15 min",
+            "totalTime": "25 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Bell Pepper", "quantity": "150 g"},
+              {"name": "Zucchini", "quantity": "150 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Soy Sauce (Gluten-Free)", "quantity": "20 ml"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse 200 g canned chickpeas. 2. Dice 150 g bell pepper and 150 g zucchini. 3. Mince 2 garlic cloves. 4. Heat 20 ml olive oil in a pan and add garlic. Sauté for 1 minute. 5. Add bell pepper and zucchini, cooking for 5 minutes. 6. Stir in chickpeas, 20 ml soy sauce, 3 g salt, and 1 g black pepper, cooking for another 5 minutes."
+          },
+          "sideDish": {
+            "name": "Sweet Potato Mash",
+            "prepTime": "5 min",
+            "cookTime": "20 min",
+            "totalTime": "25 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Sweet Potato", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Peel and chop 200 g sweet potato. 2. Boil in water for 20 minutes until soft. 3. Drain and mash with 10 ml olive oil, 1 g salt, and 1 g black pepper."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Zucchini Noodles with Marinara Sauce",
+            "prepTime": "10 min",
+            "cookTime": "15 min",
+            "totalTime": "25 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Zucchini", "quantity": "250 g"},
+              {"name": "Canned Diced Tomatoes", "quantity": "200 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Basil", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Spiralize 250 g zucchini into noodles. 2. In a pan, heat 15 ml olive oil. Add minced garlic and cook for 1 min. 3. Add 200 g canned diced tomatoes, 5 g basil, 3 g salt, and 1 g black pepper. Simmer for 10 minutes. 4. Add zucchini noodles and cook for another 5 minutes until tender."
+          },
+          "sideDish": {
+            "name": "Avocado Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Avocado", "quantity": "100 g"},
+              {"name": "Cherry Tomatoes", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Lemon Juice", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Cut 100 g avocado and 100 g cherry tomatoes. 2. In a bowl, combine avocado and tomatoes. 3. Drizzle with 10 ml olive oil, 10 ml lemon juice, and 1 g salt."
+          }
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Vegetable Stir Fry with Quinoa",
+            "prepTime": "10 min",
+            "cookTime": "15 min",
+            "totalTime": "25 min",
+            "calories": 750,
+            "ingredients": [
+              {"name": "Quinoa", "quantity": "150 g"},
+              {"name": "Bell Pepper", "quantity": "150 g"},
+              {"name": "Broccoli", "quantity": "150 g"},
+              {"name": "Carrot", "quantity": "100 g"},
+              {"name": "Garlic", "quantity": "1 clove"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Soy Sauce (Gluten-Free)", "quantity": "15 ml"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Cook 150 g quinoa in 300 ml water. 2. Meanwhile, chop 150 g bell pepper, 150 g broccoli, and 100 g carrot. 3. Mince 1 garlic clove. 4. Heat 20 ml olive oil in a pan, add garlic and sauté for 1 min. 5. Add vegetables and cook for 5-7 minutes. 6. Add quinoa, 15 ml soy sauce, 2 g salt, and 1 g black pepper, stir and serve."
+          },
+          "sideDish": {
+            "name": "Garden Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Mixed Greens", "quantity": "100 g"},
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Lemon Juice", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Combine 100 g mixed greens and 100 g chopped cucumber in a bowl. 2. Drizzle with 10 ml olive oil, 10 ml lemon juice, and 1 g salt. Toss to combine."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Stuffed Peppers with Rice and Lentils",
+            "prepTime": "15 min",
+            "cookTime": "30 min",
+            "totalTime": "45 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Bell Peppers", "quantity": "2 units"},
+              {"name": "Brown Rice", "quantity": "100 g"},
+              {"name": "Green Lentils", "quantity": "100 g"},
+              {"name": "Onion", "quantity": "100 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Vegetable Broth", "quantity": "500 ml"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Cook 100 g brown rice and 100 g lentils separately. 2. Preheat the oven to 180°C. 3. Chop 100 g onion and mince 2 garlic cloves. 4. Heat 20 ml olive oil in a pan, sauté onion and garlic for 5 minutes. 5. Mix rice and lentils with sautéed onion, add 3 g salt and 1 g black pepper. 6. Stuff 2 bell peppers and place in a baking dish with 500 ml vegetable broth. 7. Cover with foil and bake for 25 minutes."
+          },
+          "sideDish": {
+            "name": "Roasted Carrots",
+            "prepTime": "5 min",
+            "cookTime": "25 min",
+            "totalTime": "30 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Carrots", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Preheat the oven to 200°C. 2. Peel and cut 200 g carrots into sticks. 3. Toss with 10 ml olive oil, 1 g salt, and 1 g black pepper. 4. Spread on a baking sheet and roast for 25 minutes."
+          }
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Vegetable Frittata (without eggs)",
+            "prepTime": "10 min",
+            "cookTime": "20 min",
+            "totalTime": "30 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Chickpea Flour", "quantity": "100 g"},
+              {"name": "Water", "quantity": "200 ml"},
+              {"name": "Spinach", "quantity": "150 g"},
+              {"name": "Bell Pepper", "quantity": "100 g"},
+              {"name": "Onion", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Whisk together 100 g chickpea flour and 200 ml water in a bowl. 2. Chop 100 g onion, 100 g bell pepper, and rinse 150 g spinach. 3. Heat 15 ml olive oil in a pan and sauté vegetables for 5 minutes. 4. Pour the chickpea mixture over sautéed vegetables, sprinkle with 3 g salt and 1 g black pepper. 5. Cook for about 15 minutes until set."
+          },
+          "sideDish": {
+            "name": "Fruit Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Banana", "quantity": "1 unit"},
+              {"name": "Apple", "quantity": "1 unit"},
+              {"name": "Orange", "quantity": "1 unit"}
+            ],
+            "instructions": "1. Chop 1 banana, 1 apple, and 1 orange into bite-sized pieces. 2. Mix in a bowl and serve."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Spicy Lentil Stew",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Green Lentils", "quantity": "150 g"},
+              {"name": "Tomato", "quantity": "200 g"},
+              {"name": "Onion", "quantity": "100 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Spices (Cumin, Chili)", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse 150 g green lentils. 2. Dice 100 g onion and 200 g tomato. 3. Mince 2 garlic cloves. 4. Heat 20 ml olive oil in a pot, sauté onion and garlic for 5 minutes. 5. Add lentils, diced tomato, and 500 ml water. 6. Season with 5 g spices, 3 g salt, and 1 g black pepper, simmer for 30 minutes."
+          },
+          "sideDish": {
+            "name": "Brown Rice",
+            "prepTime": "5 min",
+            "cookTime": "30 min",
+            "totalTime": "35 min",
+            "calories": 300,
+            "ingredients": [
+              {"name": "Brown Rice", "quantity": "100 g"},
+              {"name": "Water", "quantity": "250 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse 100 g brown rice under cold water. 2. Combine rice, 250 ml water, and 1 g salt in a pot. 3. Bring to a boil, then reduce heat and cover. 4. Cook for about 30 minutes or until water is absorbed."
+          }
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Quinoa Bowl with Veggies",
+            "prepTime": "10 min",
+            "cookTime": "20 min",
+            "totalTime": "30 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Quinoa", "quantity": "150 g"},
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Cherry Tomatoes", "quantity": "150 g"},
+              {"name": "Kale", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "30 ml"},
+              {"name": "Lemon Juice", "quantity": "20 ml"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Cook 150 g quinoa in 300 ml water. 2. Chop 100 g cucumber, 150 g cherry tomatoes, and 100 g kale. 3. In a bowl, combine cooked quinoa, raw vegetables. 4. Drizzle with 30 ml olive oil, 20 ml lemon juice, add 3 g salt and 1 g black pepper. Toss everything to combine."
+          },
+          "sideDish": {
+            "name": "Cucumber Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Lemon Juice", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Thinly slice 100 g cucumber. 2. In a bowl, combine cucumber, 10 ml lemon juice, and 1 g salt. Toss to serve."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Sweet Potato and Black Bean Bowl",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Sweet Potato", "quantity": "250 g"},
+              {"name": "Canned Black Beans", "quantity": "200 g"},
+              {"name": "Red Bell Pepper", "quantity": "100 g"},
+              {"name": "Red Onion", "quantity": "50 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Peel and chop 250 g sweet potato, then boil until tender. 2. Heat 20 ml olive oil in a pan, add chopped onions and red bell pepper to sauté for 5 minutes. 3. Add canned black beans (drained), cumin, salt, and pepper, cooking until heated through. 4. Combine with drained sweet potatoes, mash lightly, and serve."
+          },
+          "sideDish": {
+            "name": "Spinach Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Spinach", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Lemon Juice", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Rinse and dry 100 g spinach. 2. Toss spinach with 10 ml olive oil, 10 ml lemon juice, and 1 g salt in a bowl."
+          }
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Chickpea Curry",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 700,
+            "ingredients": [
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Coconut Milk", "quantity": "200 ml"},
+              {"name": "Tomato", "quantity": "150 g"},
+              {"name": "Onion", "quantity": "100 g"},
+              {"name": "Garlic", "quantity": "2 cloves"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Curry Powder", "quantity": "10 g"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Chop 100 g onion and dice 150 g tomato. 2. Heat 20 ml olive oil in a pot, sauté onion and garlic for 5 min. 3. Add tomato, 200 g canned chickpeas, 200 ml coconut milk, 
+10 g curry powder, 3 g salt, and 1 g black pepper. 4. Simmer for 20 minutes until thickened."
+          },
+          "sideDish": {
+            "name": "Cauliflower Rice",
+            "prepTime": "5 min",
+            "cookTime": "10 min",
+            "totalTime": "15 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Cauliflower", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Grate 200 g cauliflower into rice-sized pieces. 2. Heat 10 ml olive oil in a pan, add cauliflower, and cook for 10 minutes. Season with 1 g salt."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Stuffed Zucchini",
+            "prepTime": "10 min",
+            "cookTime": "25 min",
+            "totalTime": "35 min",
+            "calories": 800,
+            "ingredients": [
+              {"name": "Zucchini", "quantity": "2 units"},
+              {"name": "Quinoa", "quantity": "100 g"},
+              {"name": "Canned Black Beans", "quantity": "200 g"},
+              {"name": "Corn", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "3 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Preheat oven to 190°C. 2. Cook 100 g quinoa in water. 3. Halve 2 zucchinis and scoop out the insides. 4. In a bowl, combine cooked quinoa, 200 g black beans, 100 g corn, 20 ml olive oil, 5 g cumin, 3 g salt, and 1 g black pepper. 5. Stuff zucchinis with the mixture, place on a baking dish, and bake for 25 minutes."
+          },
+          "sideDish": {
+            "name": "Mixed Greens Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Mixed Salad Greens", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Balsamic Vinegar", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Combine 100 g mixed salad greens in a bowl. 2. Drizzle with 10 ml olive oil, 10 ml balsamic vinegar, and 1 g salt, toss to serve."
+          }
+        }
+      ]
+    }
+  ],
+  "shoppingList": [
+    {
+      "category": "Grains",
+      "items": [
+        {"name": "Quinoa", "quantity": "1 kg"},
+        {"name": "Brown Rice", "quantity": "500 g"},
+        {"name": "Chickpea Flour", "quantity": "400 g"},
+        {"name": "Green Lentils", "quantity": "500 g"},
+        {"name": "Canned Chickpeas", "quantity": "1.4 kg"},
+        {"name": "Canned Black Beans", "quantity": "1.4 kg"},
+        {"name": "Corn", "quantity": "300 g"}
+      ]
+    },
+    {
+      "category": "Vegetables",
+      "items": [
+        {"name": "Cucumber", "quantity": "700 g"},
+        {"name": "Cherry Tomatoes", "quantity": "1.2 kg"},
+        {"name": "Red Bell Pepper", "quantity": "400 g"},
+        {"name": "Green Bell Pepper", "quantity": "300 g"},
+        {"name": "Zucchini", "quantity": "1 kg"},
+        {"name": "Sweet Potato", "quantity": "500 g"},
+        {"name": "Broccoli", "quantity": "300 g"},
+        {"name": "Carrots", "quantity": "800 g"},
+        {"name": "Spinach", "quantity": "400 g"},
+        {"name": "Kale", "quantity": "100 g"},
+        {"name": "Cauliflower", "quantity": "200 g"}
+      ]
+    },
+    {
+      "category": "Fruits",
+      "items": [
+        {"name": "Banana", "quantity": "5 units"},
+        {"name": "Apple", "quantity": "5 units"},
+        {"name": "Orange", "quantity": "5 units"}
+      ]
+    },
+    {
+      "category": "Condiments",
+      "items": [
+        {"name": "Olive Oil", "quantity": "500 ml"},
+        {"name": "Lemon Juice", "quantity": "300 ml"},
+        {"name": "Balsamic Vinegar", "quantity": "100 ml"},
+        {"name": "Soy Sauce (Gluten-Free)", "quantity": "150 ml"},
+        {"name": "Coconut Milk", "quantity": "200 ml"},
+        {"name": "Spices (Cumin, Chili)", "quantity": "50 g"},
+        {"name": "Curry Powder", "quantity": "50 g"},
+        {"name": "Salt", "quantity": "100 g"},
+        {"name": "Black Pepper", "quantity": "50 g"}
+      ]
+    },
+    {
+      "category": "Others",
+      "items": [
+        {"name": "Garlic", "quantity": "10 cloves"},
+        {"name": "Onion", "quantity": "600 g"},
+        {"name": "Vegetable Broth", "quantity": "2 liters"},
+        {"name": "Mixed Salad Greens", "quantity": "300 g"}
+      ]
+    }
+  ]
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -----------------------------------------------------------------------
+
+
+
+{
+  "mealPlan": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Quinoa Salad with Chickpeas",
+            "prepTime": "15 min",
+            "cookTime": "20 min",
+            "totalTime": "35 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Quinoa", "quantity": "150 g"},
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Red Bell Pepper", "quantity": "100 g"},
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "30 ml"},
+              {"name": "Lemon Juice", "quantity": "15 ml"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"},
+              {"name": "Parsley", "quantity": "10 g"}
+            ],
+            "instructions": "1. Rinse quinoa under cold water and boil in 300ml of water for 15 minutes. 2. Drain and cool. 3. Chop bell pepper and cucumber. 4. In a bowl, mix quinoa, chickpeas, bell 
+pepper, cucumber. 5. Add olive oil, lemon juice, salt, pepper, and chopped parsley. 6. Toss and serve."
+          },
+          "sideDish": {
+            "name": "Roasted Sweet Potatoes",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 300,
+            "ingredients": [
+              {"name": "Sweet Potato", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Cayenne Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Preheat the oven to 200°C. 2. Peel and cube sweet potatoes. 3. Toss with olive oil, salt, and cayenne pepper. 4. Spread on a baking sheet. 5. Roast for 30 minutes until golden, stirring halfway. 6. Serve alongside quinoa salad."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Stuffed Bell Peppers",
+            "prepTime": "20 min",
+            "cookTime": "40 min",
+            "totalTime": "60 min",
+            "calories": 700,
+            "ingredients": [
+              {"name": "Bell Peppers", "quantity": "2 units"},
+              {"name": "Brown Rice", "quantity": "150 g"},
+              {"name": "Black Beans", "quantity": "150 g"},
+              {"name": "Corn", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"},
+              {"name": "Avocado", "quantity": "50 g"}
+            ],
+            "instructions": "1. Cook brown rice according to package instructions. 2. Preheat oven to 180°C. 3. Halve the bell peppers and remove seeds. 4. Mix cooked rice, black beans, corn, olive oil, cumin, salt, and pepper in a bowl. 5. Fill the pepper halves with the mixture. 6. Place in a baking dish; bake for 30 minutes. 7. Serve with sliced avocado."
+          },
+          "sideDish": {
+            "name": "Mixed Green Salad",
+            "prepTime": "10 min",
+            "cookTime": "0 min",
+            "totalTime": "10 min",
+            "calories": 250,
+            "ingredients": [
+              {"name": "Mixed Greens", "quantity": "100 g"},
+              {"name": "Cucumber", "quantity": "50 g"},
+              {"name": "Cherry Tomatoes", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Balsamic Vinegar", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. In a bowl, combine mixed greens, sliced cucumber, and halved cherry tomatoes. 2. Drizzle with olive oil, balsamic vinegar, salt, and pepper. 3. Toss gently, and serve."          }
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Lentil Soup",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 500,
+            "ingredients": [
+              {"name": "Lentils", "quantity": "150 g"},
+              {"name": "Carrot", "quantity": "100 g"},
+              {"name": "Celery", "quantity": "100 g"},
+              {"name": "Onion", "quantity": "50 g"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Vegetable Broth", "quantity": "500 ml"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Heat olive oil in a pot and sauté diced onion, carrot, and celery for 5 minutes. 2. Add minced garlic and sauté for another minute. 3. Add lentils and broth; bring to a boil. 4. Reduce heat and simmer for 25 minutes until lentils are tender. 5. Season with salt and pepper, then serve."
+          },
+          "sideDish": {
+            "name": "Whole Grain Bread",
+            "prepTime": "0 min",
+            "cookTime": "0 min",
+            "totalTime": "0 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Gluten-Free Bread", "quantity": "2 slices"}
+            ],
+            "instructions": "Serve lentil soup with slices of gluten-free bread on the side."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Zucchini Noodles with Tomato Sauce",
+            "prepTime": "15 min",
+            "cookTime": "15 min",
+            "totalTime": "30 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Zucchini", "quantity": "300 g"},
+              {"name": "Canned Tomatoes", "quantity": "200 g"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Basil", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Spiralize zucchini into noodles. 2. Heat olive oil in a skillet, add minced garlic, and sauté for a minute. 3. Add canned tomatoes, salt, and pepper; let simmer for 10 
+minutes. 4. Add zucchini noodles and cook for an additional 5 minutes. 5. Stir in chopped basil and serve."
+          },
+          "sideDish": {
+            "name": "Garlic Bread",
+            "prepTime": "5 min",
+            "cookTime": "5 min",
+            "totalTime": "10 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Gluten-Free Bread", "quantity": "2 slices"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"}
+            ],
+            "instructions": "1. Preheat the oven to 180°C. 2. Mix minced garlic and olive oil; brush on bread. 3. Bake for 5 minutes until crispy."
+          }
+        }
+      ]
+    },
+    {
+      "day": 3,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Chickpea Stir Fry",
+            "prepTime": "10 min",
+            "cookTime": "15 min",
+            "totalTime": "25 min",
+            "calories": 550,
+            "ingredients": [
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Bell Peppers", "quantity": "150 g"},
+              {"name": "Broccoli", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Soy Sauce", "quantity": "20 ml"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Ginger", "quantity": "5 g"},
+              {"name": "Rice", "quantity": "150 g"}
+            ],
+            "instructions": "1. Cook rice as per instructions. 2. Heat olive oil in a pan, add minced garlic and ginger, sauté for 1 minute. 3. Add diced bell peppers and broccoli, stir-fry for 5 minutes. 4. Add chickpeas and soy sauce; stir until heated through. 5. Serve stir-fry over rice."
+          },
+          "sideDish": {
+            "name": "Simple Cucumber Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Lemon Juice", "quantity": "5 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Slice cucumber and place in a bowl. 2. Drizzle with olive oil, lemon juice, and salt; toss and serve."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Baked Falafel",
+            "prepTime": "15 min",
+            "cookTime": "25 min",
+            "totalTime": "40 min",
+            "calories": 650,
+            "ingredients": [
+              {"name": "Canned Chickpeas", "quantity": "200 g"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Coriander", "quantity": "5 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Parsley", "quantity": "10 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"},
+              {"name": "Gluten-Free Pita Bread", "quantity": "1 piece"},
+              {"name": "Tahini Sauce", "quantity": "30 ml"}
+            ],
+            "instructions": "1. Preheat oven to 200°C. 2. Blend chickpeas, garlic, cumin, coriander, parsley, salt, and pepper in a food processor until coarse. 3. Form small balls and place on a baking sheet. 4. Drizzle with olive oil and bake for 25 minutes. 5. Serve with pita and tahini sauce."
+          },
+          "sideDish": {
+            "name": "Tabbouleh Salad",
+            "prepTime": "10 min",
+            "cookTime": "0 min",
+            "totalTime": "10 min",
+            "calories": 200,
+            "ingredients": [
+              {"name": "Parsley", "quantity": "20 g"},
+              {"name": "Tomato", "quantity": "100 g"},
+              {"name": "Cucumber", "quantity": "50 g"},
+              {"name": "Lemon Juice", "quantity": "10 ml"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Finely chop parsley, tomato, and cucumber. 2. Combine in a bowl with lemon juice, olive oil, and salt; toss and serve."
+          }
+        }
+      ]
+    },
+    {
+      "day": 4,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Vegetable Stir-Fry",
+            "prepTime": "10 min",
+            "cookTime": "15 min",
+            "totalTime": "25 min",
+            "calories": 500,
+            "ingredients": [
+              {"name": "Mixed Vegetables", "quantity": "250 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Soy Sauce", "quantity": "15 ml"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Ginger", "quantity": "5 g"},
+              {"name": "Brown Rice", "quantity": "150 g"}
+            ],
+            "instructions": "1. Cook rice according to package instructions. 2. In a pan, heat olive oil, sauté minced garlic and ginger for a minute. 3. Add mixed vegetables and stir-fry for 5-7 minutes. 4. Add soy sauce; stir well, and serve over rice."
+          },
+          "sideDish": {
+            "name": "Mango Salad",
+            "prepTime": "10 min",
+            "cookTime": "0 min",
+            "totalTime": "10 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Mango", "quantity": "150 g"},
+              {"name": "Olive Oil", "quantity": "15 ml"},
+              {"name": "Lime Juice", "quantity": "10 ml"},
+              {"name": "Basil", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Peel and cube mango. 2. In a bowl, combine mango cubes, olive oil, lime juice, basil, and salt; toss and serve."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Sweet Potato and Black Bean Tacos",
+            "prepTime": "15 min",
+            "cookTime": "20 min",
+            "totalTime": "35 min",
+            "calories": 700,
+            "ingredients": [
+              {"name": "Sweet Potato", "quantity": "200 g"},
+              {"name": "Black Beans", "quantity": "200 g"},
+              {"name": "Corn Tortillas", "quantity": "2 units"},
+              {"name": "Avocado", "quantity": "50 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Cilantro", "quantity": "10 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Black Pepper", "quantity": "1 g"}
+            ],
+            "instructions": "1. Preheat oven to 200°C, dice sweet potato, and toss with olive oil, salt, and pepper. 2. Roast sweet potatoes for 20 minutes until tender. 3. Heat black beans in a pan. 
+4. Assemble tacos with sweet potatoes, black beans, sliced avocado, and cilantro on tortillas."
+          },
+          "sideDish": {
+            "name": "Green Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Mixed Greens", "quantity": "100 g"},
+              {"name": "Cucumber", "quantity": "50 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Balsamic Vinegar", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. In a bowl, combine mixed greens and sliced cucumber. 2. Drizzle with olive oil, balsamic vinegar, and salt; toss to combine."
+          }
+        }
+      ]
+    },
+    {
+      "day": 5,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Vegetable Quinoa Bowl",
+            "prepTime": "15 min",
+            "cookTime": "20 min",
+            "totalTime": "35 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Quinoa", "quantity": "150 g"},
+              {"name": "Mixed Vegetables", "quantity": "200 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Soy Sauce", "quantity": "15 ml"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Ginger", "quantity": "5 g"},
+              {"name": "Sesame Seeds", "quantity": "10 g"},
+              {"name": "Salt", "quantity": "2 g"}
+            ],
+            "instructions": "1. Cook quinoa as per instructions. 2. In a pan, heat olive oil; sauté minced garlic and ginger for a minute. 3. Add mixed vegetables and stir-fry until tender. 4. Add quinoa and soy sauce; mix well and serve with sesame seeds on top."
+          },
+          "sideDish": {
+            "name": "Cucumber and Tomato Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Cucumber", "quantity": "100 g"},
+              {"name": "Tomato", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Lemon Juice", "quantity": "5 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Dice cucumber and tomato. 2. In a bowl, combine with olive oil, lemon juice, and salt; toss and serve."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Stuffed Peppers with Rice",
+            "prepTime": "20 min",
+            "cookTime": "30 min",
+            "totalTime": "50 min",
+            "calories": 700,
+            "ingredients": [
+              {"name": "Bell Peppers", "quantity": "2 units"},
+              {"name": "Brown Rice", "quantity": "200 g"},
+              {"name": "Black Beans", "quantity": "150 g"},
+              {"name": "Tomato", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Paprika", "quantity": "2 g"}
+            ],
+            "instructions": "1. Preheat oven to 180°C. 2. Cook rice as per instructions. 3. Halve bell peppers and remove seeds. 4. Mix cooked rice, black beans, diced tomatoes, olive oil, cumin, salt, and paprika. 5. Fill the pepper halves with the mixture, place in a baking dish, and bake for 30 minutes."
+          },
+          "sideDish": {
+            "name": "Simple Green Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Mixed Greens", "quantity": "100 g"},
+              {"name": "Olive Oil", "quantity": "10 ml"},
+              {"name": "Vinegar", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"}
+            ],
+            "instructions": "1. Combine mixed greens in a bowl. 2. Drizzle with olive oil, vinegar, and salt; toss and serve."
+          }
+        }
+      ]
+    },
+    {
+      "day": 6,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Vegetable and Bean Chili",
+            "prepTime": "10 min",
+            "cookTime": "30 min",
+            "totalTime": "40 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Canned Beans", "quantity": "400 g"},
+              {"name": "Bell Pepper", "quantity": "100 g"},
+              {"name": "Zucchini", "quantity": "100 g"},
+              {"name": "Onion", "quantity": "50 g"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Canned Tomatoes", "quantity": "400 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Cumin", "quantity": "5 g"},
+              {"name": "Chili Powder", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "2 g"}
+            ],
+            "instructions": "1. Heat olive oil in a pot, sauté chopped onion, bell pepper, and zucchini for 5 minutes. 2. Add minced garlic and cook for another minute. 3. Stir in canned tomatoes, beans, cumin, chili powder, and salt. 4. Simmer for 25 minutes and serve hot."
+          },
+          "sideDish": {
+            "name": "Cornbread (Gluten-Free)",
+            "prepTime": "10 min",
+            "cookTime": "20 min",
+            "totalTime": "30 min",
+            "calories": 400,
+            "ingredients": [
+              {"name": "Cornmeal", "quantity": "150 g"},
+              {"name": "Baking Powder", "quantity": "5 g"},
+              {"name": "Salt", "quantity": "2 g"},
+              {"name": "Water", "quantity": "300 ml"},
+              {"name": "Olive Oil", "quantity": "30 ml"}
+            ],
+            "instructions": "1. Preheat oven to 200°C. 2. In a bowl, mix cornmeal, baking powder, and salt. 3. Add water and olive oil, stir until combined. 4. Pour into a prepared baking dish and bake for 20 minutes until cooked through."
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "mainDish": {
+            "name": "Vegetable Stir Fry with Rice Noodles",
+            "prepTime": "10 min",
+            "cookTime": "10 min",
+            "totalTime": "20 min",
+            "calories": 600,
+            "ingredients": [
+              {"name": "Rice Noodles", "quantity": "150 g"},
+              {"name": "Broccoli", "quantity": "100 g"},
+              {"name": "Bell Pepper", "quantity": "100 g"},
+              {"name": "Carrot", "quantity": "50 g"},
+              {"name": "Olive Oil", "quantity": "20 ml"},
+              {"name": "Soy Sauce", "quantity": "15 ml"},
+              {"name": "Garlic", "quantity": "5 g"},
+              {"name": "Ginger", "quantity": "5 g"}
+            ],
+            "instructions": "1. Soak rice noodles in hot water for 5 minutes, then drain. 2. In a pan, heat olive oil, sauté minced garlic and ginger for 1 minute. 3. Add chopped vegetables and stir-fry for 5 minutes. 4. Add noodles and soy sauce; mix well and serve."
+          },
+          "sideDish": {
+            "name": "Papaya Salad",
+            "prepTime": "5 min",
+            "cookTime": "0 min",
+            "totalTime": "5 min",
+            "calories": 150,
+            "ingredients": [
+              {"name": "Papaya", "quantity": "150 g"},
+              {"name": "Lime Juice", "quantity": "10 ml"},
+              {"name": "Salt", "quantity": "1 g"},
+              {"name": "Cilantro", "quantity": "5 g"}
+            ],
+            "instructions": "1. Peel and dice papaya. 2. In a bowl, mix papaya with lime juice, salt, and chopped cilantro; toss and serve."
+          }
+        }
+      ]
+    }
+  ],
+  "shoppingList": [
+    {
+      "category": "Grains",
+      "items": [
+        {"name": "Quinoa", "quantity": "900 g"},
+        {"name": "Brown Rice", "quantity": "600 g"},
+        {"name": "Rice Noodles", "quantity": "300 g"},
+        {"name": "Cornmeal", "quantity": "150 g"},
+        {"name": "Gluten-Free Bread", "quantity": "8 slices"},
+        {"name": "Gluten-Free Pita Bread", "quantity": "1 piece"},
+        {"name": "Corn Tortillas", "quantity": "4 units"}
+      ]
+    },
+    {
+      "category": "Legumes",
+      "items": [
+        {"name": "Canned Chickpeas", "quantity": "1.4 kg"},
+        {"name": "Black Beans", "quantity": "1.2 kg"},
+        {"name": "Canned Beans", "quantity": "400 g"},
+        {"name": "Lentils", "quantity": "150 g"}
+      ]
+    },
+    {
+      "category": "Vegetables",
+      "items": [
+        {"name": "Bell Peppers", "quantity": "8 units"},
+        {"name": "Zucchini", "quantity": "400 g"},
+        {"name": "Tomato", "quantity": "500 g"},
+        {"name": "Onion", "quantity": "250 g"},
+        {"name": "Garlic", "quantity": "35 g"},
+        {"name": "Carrot", "quantity": "400 g"},
+        {"name": "Cucumber", "quantity": "400 g"},
+        {"name": "Broccoli", "quantity": "200 g"},
+        {"name": "Sweet Potato", "quantity": "400 g"},
+        {"name": "Mixed Vegetables", "quantity": "500 g"},
+        {"name": "Mixed Greens", "quantity": "600 g"},
+        {"name": "Avocado", "quantity": "150 g"},
+        {"name": "Lime", "quantity": "5 units"},
+        {"name": "Papaya", "quantity": "150 g"},
+        {"name": "Fresh Parsley", "quantity": "50 g"},
+        {"name": "Cilantro", "quantity": "15 g"}
+      ]
+    },
+    {
+      "category": "Fruits",
+      "items": [
+        {"name": "Mango", "quantity": "150 g"},
+        {"name": "Lemon", "quantity": "3 units"},
+        {"name": "Cherry Tomatoes", "quantity": "500 g"}
+      ]
+    },
+    {
+      "category": "Oils & Sauces",
+      "items": [
+        {"name": "Olive Oil", "quantity": "380 ml"},
+        {"name": "Soy Sauce", "quantity": "100 ml"},
+        {"name": "Balsamic Vinegar", "quantity": "100 ml"},
+        {"name": "Tahini Sauce", "quantity": "30 ml"}
+      ]
+    },
+    {
+      "category": "Spices",
+      "items": [
+        {"name": "Cumin", "quantity": "20 g"},
+        {"name": "Coriander", "quantity": "5 g"},
+        {"name": "Chili Powder", "quantity": "5 g"},
+        {"name": "Paprika", "quantity": "2 g"},
+        {"name": "Black Pepper", "quantity": "10 g"},
+        {"name": "Salt", "quantity": "20 g"},
+        {"name": "Cayenne Pepper", "quantity": "1 g"},
+        {"name": "Ginger", "quantity": "10 g"}
+      ]
+    }
+  ]
+} 
+
+
+
+
+
+
+

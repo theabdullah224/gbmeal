@@ -37,98 +37,7 @@ import useStore from "./Store";
 
 import { jwtDecode } from "jwt-decode";
 
-const parseMealPlanData = (mealPlan) => {
-  if (typeof mealPlan !== "string" || mealPlan.trim() === "") {
-    return [];
-  }
 
-  const result = [];
-  const dayRegex = /\d+:/g;
-  const daySections = mealPlan.split(dayRegex);
-  const dayNumbers = mealPlan.match(dayRegex);
-
-  const boldMealNumber = (text) => {
-    return text.replace(/(Meal \d+)/, "$1");
-  };
-
-  const numberIngredients = (ingredients) => {
-    const sections = ingredients.split("-------------------------");
-    return sections
-      .map((section) => {
-        let count = 1;
-        return section
-          .split("\n")
-          .map((line) => {
-            line = line.trim();
-            if (line.startsWith("-")) {
-              return `${count++}. ${line.substring(1).trim()}`;
-            }
-            return line;
-          })
-          .join("\n");
-      })
-      .join("\n-------------------------\n");
-  };
-
-  const processMeal = (meal, index) => {
-    const mealNumber = `Meal ${index + 1}`;
-    let [mealSection, ingredientsSection, instructionsSection] = meal.split(
-      /Ingredients:|Instructions:/
-    );
-
-    const mealLines = mealSection.split("\n").filter((line) => line.trim());
-    const restructuredMealLines = mealLines.map((line) => {
-      if (line.toLowerCase().includes("side dish:")) return "\n" + line;
-      if (line.toLowerCase().includes("cooking time:")) return "\n" + line;
-      if (line.toLowerCase().includes("nutritional information:"))
-        return "\n" + line;
-      // if (line.toLowerCase().includes("total:\ncalories")) return "\n" + line;
-      if (line.toLowerCase().includes("total:")) return "\n" + line;
-      return line;
-    });
-
-    // Join the restructured lines and bold the meal number
-    const mealData = boldMealNumber(restructuredMealLines.join("\n"));
-
-    const ingredientsLines = ingredientsSection
-      ? ingredientsSection.split("\n").filter((line) => line.trim())
-      : [];
-    const restructuredIngredientsLines = ingredientsLines.map((line) => {
-      if (line.toLowerCase().includes("main dish:")) return line; // No newline before Main Dish:
-      if (line.toLowerCase().includes("side dish:")) return "\n" + line;
-      return line;
-    });
-    const ingredients = restructuredIngredientsLines.join("\n");
-
-    // Process instructions lines
-    const instructionsLines = instructionsSection
-      ? instructionsSection.split("\n").filter((line) => line.trim())
-      : [];
-    const restructuredInstructionLines = instructionsLines.map((line) => {
-      if (line.toLowerCase().includes("side dish:")) return "\n" + line;
-      return line;
-    });
-    const instructions = restructuredInstructionLines.join("\n");
-
-    return `${mealData}\n\nIngredients:\n${ingredients}\n\nInstructions:\n${instructions}`;
-  };
-
-  for (let i = 1; i < daySections.length; i++) {
-    const dayNumber = dayNumbers[i - 1].trim();
-    const dayContent = daySections[i].trim();
-
-    const meals = dayContent.split(/Meal \d+/).filter(Boolean);
-    const dayRow = [dayNumber];
-
-    meals.forEach((meal, index) => {
-      dayRow.push(processMeal(meal, index));
-    });
-
-    result.push(dayRow);
-  }
-
-  return result;
-};
 
 const cards = [
   {
@@ -236,28 +145,28 @@ const cards = [
       {
         type: "radio",
         name: "servings",
-        label: "1 Serving",
+        label: "1 Person",
         image: servings,
         info: "",
       },
       {
         type: "radio",
         name: "servings",
-        label: "2 Servings",
+        label: "2 Person",
         image: servings,
         info: "",
       },
       {
         type: "radio",
         name: "servings",
-        label: "3 Servings",
+        label: "3 Person",
         image: servings,
         info: "",
       },
       {
         type: "radio",
         name: "servings",
-        label: "4 Servings",
+        label: "4 Person",
         image: servings,
         info: "",
       },
@@ -369,9 +278,42 @@ const cards = [
       },
     ],
   },
-
   {
-    //card 6
+    //card 2
+    subtitle: "Discover",
+    title: "How many meals are required per day",
+    description: "Tell us about the meals required per day",
+
+    // image: "image1.jpg",
+    elements: [
+      {
+        type: "radio",
+        name: "mealperday",
+        label: "2 Meals",
+        image: chicken,
+        info: "",
+      },
+      {
+        type: "radio",
+        name: "mealperday",
+        label: "3 Meals",
+        image: pork,
+        info: "",
+      },
+      {
+        type: "radio",
+        name: "mealperday",
+        label: "4 Meals",
+        image: beef,
+        info: "",
+      },
+     
+    ],
+  },
+
+ 
+  {
+    //card 7
     subtitle: "Details",
     title: "Your Details",
     description: "",
@@ -385,27 +327,16 @@ const cards = [
       { type: "password", placeholder: "Password" },
     ],
   },
-  {
-    //card 7
-    subtitle: "Log In",
-    title: "",
-    description: "",
-    // image: "image1.jpg",
-    elements: [
-      { type: "email", placeholder: "Email Address" },
-      { type: "password", placeholder: "Password" },
-    ],
-  },
+ 
 ];
 
-const CardNavigator = ({ setLoading }) => {
+const CardNavigator = () => {
   const API_BASE_URL = "https://meeel.xyz";
   const [eror, seteror] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isOpendislike, setIsOpendislike] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [newItemNamedislike, setNewItemNamedislike] = useState("");
-  const [customItems, setCustomItems] = useState([]);
   const [category, setCategory] = useState("");
   const [selectedAllergies, setSelectedAllergies] = useState([]);
   const [dislike, setdislike] = useState([]);
@@ -422,9 +353,8 @@ const CardNavigator = ({ setLoading }) => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [loginError, setLoginError] = useState("");
   const { isLoggedIn, setIsLoggedIn } = useStore();
-  const [hasGeneratedPDF, setHasGeneratedPDF] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-
+  const [mealperday, setmealperday] = useState("")
   const [dietrypopup, setdietrypopup] = useState(false);
   const [ispopupOpen3, setIspopupOpen3] = useState(false);
   const popupRef = useRef(null);
@@ -568,7 +498,7 @@ const CardNavigator = ({ setLoading }) => {
         foodAllergy: selectedFoodAllergies,
         servings: selectedServings,
         dislikes: selecteddislike + dislike,
-        preferred_meal: `${familyMembers} members`,
+        mealperday: mealperday
       };
 
       // Signup request
@@ -632,6 +562,7 @@ const CardNavigator = ({ setLoading }) => {
   localStorage.setItem("dislike", selecteddislike);
   localStorage.setItem("dietaryRestrictions", selecteddietaryRestrictions);
   localStorage.setItem("preferredmeal", selectedPreferredMeal);
+  localStorage.setItem('mealperday',mealperday)
 
   const servings = selectedServings;
 
@@ -653,26 +584,7 @@ const CardNavigator = ({ setLoading }) => {
       });
 
       const generateData = await generateResponse.json();
-    //   const { pdf } = generateData;
-    //   // Convert base64 PDF string to Blob
-    //   const pdfBlob = base64ToBlob(pdf, "application/pdf");
-     
-    
-    // // Create a URL for the Blob
-    // const pdfUrl = URL.createObjectURL(pdfBlob);
-    
-    // // Create a link element
-    // const link = document.createElement("a");
-    // link.href = pdfUrl;
-    // link.download = "meal_plan.pdf"; // Specify the filename
-    
-    // // Append to the document, click and remove
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    
-    // // Optionally, revoke the object URL after the download
-    // URL.revokeObjectURL(pdfUrl);
+ 
     const mealPlanBlob = base64ToBlob(generateData.meal_plan_pdf, "application/pdf");
     const mealPlanUrl = URL.createObjectURL(mealPlanBlob);
     const mealPlanLink = document.createElement("a");
@@ -814,73 +726,8 @@ const CardNavigator = ({ setLoading }) => {
     // Redirect to login page or home page
   };
 
-  // Use this function to make authenticated requests
-  const makeAuthenticatedRequest = async (url, options = {}) => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      throw new Error("No access token found");
-    }
+  
 
-    const headers = {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-    };
-
-    const response = await fetch(url, { ...options, headers });
-    if (response.status === 401) {
-      // Token has expired or is invalid
-      handleLogout();
-      throw new Error("Authentication failed");
-    }
-    return response;
-  };
-
-  // Button for generate pdf
-  // const handleGeneratePDF = async () => {
-
-  //   setLoader(true);
-
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   if (!user || !user.email) {
-  //     console.error("User email not found in localStorage");
-  //     alert("User email not found. Please log in again.");
-  //     setLoader(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/check-subscription`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ email: user.email }),
-  //     });
-
-  //     if (!response.ok) {
-  //       const errorData = await response.json();
-  //       throw new Error(
-  //         errorData.error || "Failed to check subscription status"
-  //       );
-  //     }
-
-  //     const result = await response.json();
-
-  //     if (result.isSubscribed && result.canGeneratePDF) {
-  //       setIsSubscribed(true);
-  //       await generateAndSendPDF(user.email);
-  //     } else if (result.isSubscribed && !result.canGeneratePDF) {
-  //       alert("You have already generated a PDF for this subscription period.");
-  //     } else {
-  //       navigate("/payment");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error checking subscription status:", error);
-  //     alert(
-  //       "An error occurred while checking subscription status. Please try again."
-  //     );
-  //   } finally {
-  //     setLoader(false);
-  //   }
-  // };
 
   const handleGeneratePDF = async () => {
     setLoader(true);
@@ -935,279 +782,8 @@ const CardNavigator = ({ setLoading }) => {
   };
   // Generate PDf and send to mail
 
-  // Save PDf to local Storage
-  const savePDFToLocalStorage = (pdfData) => {
-    try {
-      const pdfList = JSON.parse(localStorage.getItem("pdfList")) || [];
-      const currentDate = new Date();
-      const newPDF = {
-        id: Date.now(),
-        name: `MealPlan_${currentDate.toISOString()}.pdf`,
-        data: pdfData,
-        generatedDate: currentDate.toISOString(),
-      };
 
-      // Limit to storing only the last 5 PDFs
-      if (pdfList.length >= 5) {
-        pdfList.shift(); // Remove the oldest PDF
-      }
 
-      pdfList.push(newPDF);
-      localStorage.setItem("pdfList", JSON.stringify(pdfList));
-    } catch (error) {
-      // console.error("Error saving PDF to localStorage:", error);
-      // Handle the error (e.g., show a message to the user)
-    }
-  };
-
-  const generateShoppingList = (mealPlanData) => {
-    const doc = new jsPDF();
-
-    // Parse the meal plan data and extract ingredients for both Main Dish and Side Dish
-    const ingredientsData = parseMealPlanData(mealPlanData.meal_plan);
-
-    const categorizedIngredients = ingredientsData.flatMap((dayRow) =>
-      dayRow.slice(1).flatMap((meal) => {
-        const ingredientsSection = meal.match(
-          /Ingredients:\n([\s\S]*?)(?=\n\nInstructions:|$)/
-        );
-        const ingredients = ingredientsSection
-          ? ingredientsSection[1].trim().split("\n")
-          : [];
-
-        let currentCategory = "mainDish";
-        const mainDishIngredients = [];
-        const sideDishIngredients = [];
-
-        // Categorize ingredients as Main Dish or Side Dish
-        ingredients.forEach((ingredient) => {
-          if (ingredient.toLowerCase().includes("main dish:")) {
-            currentCategory = "mainDish";
-          } else if (ingredient.toLowerCase().includes("side dish:")) {
-            currentCategory = "sideDish";
-          } else if (ingredient.trim() !== "") {
-            if (currentCategory === "mainDish") {
-              mainDishIngredients.push(ingredient.trim());
-            } else {
-              sideDishIngredients.push(ingredient.trim());
-            }
-          }
-        });
-
-        return {
-          mainDish: mainDishIngredients,
-          sideDish: sideDishIngredients,
-        };
-      })
-    );
-
-    // Function to clean up and format ingredients
-    const formatIngredients = (ingredients) => {
-      return ingredients
-        .map((item) => {
-          // Remove any existing numbering at the start
-          const cleanItem = item.replace(/^\d+\.\s*/, "").trim();
-          return cleanItem;
-        })
-        .filter((item, index, self) => self.indexOf(item) === index) // Remove duplicates
-        .map((item, index) => `${index + 1}. ${item}`) // Add clean numbering
-        .join("\n");
-    };
-
-    // Combine all main dish and side dish ingredients
-    const allMainDishIngredients = categorizedIngredients.flatMap(
-      (cat) => cat.mainDish
-    );
-    const allSideDishIngredients = categorizedIngredients.flatMap(
-      (cat) => cat.sideDish
-    );
-
-    // Format the ingredients
-    const formattedMainDish = formatIngredients(allMainDishIngredients);
-    const formattedSideDish = formatIngredients(allSideDishIngredients);
-
-    // Structure the table body (now just one row with two cells)
-    const tableBody = [[formattedMainDish, formattedSideDish]];
-
-    doc.setFontSize(20);
-    doc.text("Shopping List", 105, 18, null, null, "center");
-    doc.addImage(Logo, "PNG", 160, 8, 40, 10);
-
-    // Define the column headers for the table
-    const headers = [["Main Dish", "Side Dish"]];
-
-    // Create the table with two columns (Main Dish and Side Dish)
-    doc.autoTable({
-      head: headers,
-      body: tableBody,
-      startY: 25,
-      theme: "grid",
-      headStyles: {
-        fillColor: [115, 128, 101],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-        fontStyle: "bold",
-        valign: "middle",
-        halign: "center",
-      },
-      columnStyles: {
-        0: { cellWidth: (doc.internal.pageSize.width - 40) / 2 }, // Main Dish column
-        1: { cellWidth: (doc.internal.pageSize.width - 40) / 2 }, // Side Dish column
-      },
-      styles: {
-        fontSize: 10,
-        cellPadding: 5,
-      },
-      didParseCell: function (data) {
-        if (data.section === "body") {
-          data.cell.styles.cellPadding = 2;
-          data.cell.styles.valign = "top";
-        }
-      },
-    });
-
-    // Save and return the PDF
-    doc.setFontSize(10);
-    doc.text(``, 14, doc.lastAutoTable.finalY + 10);
-
-    const pdfData = doc.output("datauristring");
-    savePDFToLocalStorage(pdfData);
-    doc.save("ShoppingList.pdf");
-    return pdfData;
-  };
-
-  const generatePDF = (mealPlanData) => {
-    const doc = new jsPDF();
-
-    const tableData = parseMealPlanData(mealPlanData.meal_plan);
-
-    // Determine the number of meals (columns) from the first row of data
-    const numberOfMeals = tableData[0] ? tableData[0].length - 1 : 0;
-
-    doc.setFontSize(20);
-    doc.text("Meal Plan", 105, 18, null, null, "center");
-    doc.addImage(Logo, "PNG", 160, 8, 40, 10);
-
-    // Create headers dynamically based on the number of meals
-    const headers = [
-      "Day",
-      ...Array(numberOfMeals)
-        .fill(0)
-        .map((_, i) => `Meal ${i + 1}`),
-    ];
-
-    // Calculate column widths
-    const pageWidth = doc.internal.pageSize.width;
-    const margins = 20; // Left and right margins
-    const dayColumnWidth = 20;
-    const mealColumnWidth =
-      (pageWidth - margins - dayColumnWidth) / numberOfMeals;
-
-    doc.autoTable({
-      head: [headers],
-      body: tableData,
-      startY: 25,
-      theme: "grid",
-      headStyles: {
-        fillColor: [115, 128, 101],
-        textColor: [255, 255, 255],
-        fontSize: 12,
-        fontStyle: "bold",
-        valign: "middle",
-        halign: "center",
-      },
-      columnStyles: {
-        0: { cellWidth: dayColumnWidth },
-        ...Object.fromEntries(
-          Array(numberOfMeals)
-            .fill(0)
-            .map((_, i) => [i + 1, { cellWidth: mealColumnWidth }])
-        ),
-      },
-      styles: {
-        fontSize: 10,
-        cellPadding: 5,
-      },
-      didParseCell: function (data) {
-        if (data.section === "body" && data.column.index === 0) {
-          data.cell.styles.fontStyle = "bold";
-        }
-      },
-    });
-
-    doc.setFontSize(10);
-    doc.text(``, 14, doc.lastAutoTable.finalY + 10);
-
-    const pdfData = doc.output("datauristring");
-    savePDFToLocalStorage(pdfData);
-    doc.save("MealPlan.pdf");
-    return pdfData;
-  };
-
-  // const generatePDF = (mealPlanData) => {
-  //   const doc = new jsPDF();
-
-  //   const tableData = parseMealPlanData(mealPlanData.meal_plan);
-
-  //   doc.setFontSize(20);
-  //   doc.text("Meal Plan", 105, 15, null, null, "center");
-  //   doc.addImage(Logo, "PNG", 160, 8, 40, 10);
-
-  //   doc.autoTable({
-  //     head: [["Day","Meals", "Ingredients", "Instructions"]],
-  //     body: tableData,
-  //     startY: 25,
-  //     theme: "grid",
-  //     headStyles: {
-  //       fillColor: [115, 128, 101],
-  //       textColor: [255, 255, 255],
-  //       fontSize: 12,
-  //       fontStyle: "bold",
-  //       valign: "middle",
-  //       halign: "center",
-  //     },
-  //     columnStyles: {
-  //       0: { cellWidth: 22 },
-  //       1: { cellWidth: 56 },
-  //       2: { cellWidth: 57 },
-  //       3: { cellWidth: 57 },
-  //     },
-  //     styles: {
-  //       fontSize: 10,
-  //       cellPadding: 5,
-  //     },
-  //     didParseCell: function (data) {
-  //       if (data.section === "body" && data.column.index === 0) {
-  //         data.cell.styles.fontStyle = "bold";
-  //       }
-  //       if (data.section === "body" && data.column.index === 1) {
-  //         const mealText = data.cell.raw;
-  //         const formattedText = mealText.split('\n').map(line => {
-  //           if (line.match(/^(Meal \d+|Main Dish:|Side Dish:|Prep:|Cook:|Total:|Nutritional Information)/) ||
-  //               line.match(/^\$([\d,.]+)/)) {
-  //             return { text: line, styles: { fontStyle: 'bold' } }; // Use uppercase as a substitute for bold
-  //           }
-  //           return line;
-  //         }).join('\n');
-  //         data.cell.text = formattedText;
-  //       }
-  //     },
-  //   });
-
-  //   doc.setFontSize(10);
-  //   doc.text(
-  //     `Total Servings: ${mealPlanData.servings} per meal.`,
-  //     14,
-  //     doc.lastAutoTable.finalY + 10
-  //   );
-
-  //   const pdfData = doc.output("datauristring");
-  //   savePDFToLocalStorage(pdfData);
-  //   doc.save("MealPlan.pdf");
-  //   return pdfData;
-  // };
-
-  // click to next
 
   const handleNext = () => {
     // Check if a selection has been made
@@ -1246,12 +822,7 @@ const CardNavigator = ({ setLoading }) => {
     setCurrentCardIndex(currentCardIndex - 1);
   };
 
-  // const handleDivClick = (name, value) => {
-  //   setSelectedOption((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
+
 
   const handleRadioChange = (event) => {
     let { name, value } = event.target;
@@ -1289,7 +860,16 @@ const CardNavigator = ({ setLoading }) => {
       setSelecteddietaryRestrictions((prevSelected) =>
         prevSelected === value ? "" : value
       );
-    }
+    } else  if (name === "mealperday") {
+      setmealperday((prevSelected) => {
+        // If the selected value is already chosen, deselect it
+        if (prevSelected === value) {
+          return ""; // Deselect the current value
+        } else {
+          return value; // Set the new value as the selected one
+        }
+      });
+    } 
   };
 
   // rendering elements in the card
@@ -1307,7 +887,8 @@ const CardNavigator = ({ setLoading }) => {
             ? selecteddietaryRestrictions.includes(element.label)
             : element.name === "servings"
             ? selectedServings === element.label
-            : false;
+            : element.name === "mealperday"
+            ? mealperday === element.label : false;
 
         return (
           <div>
@@ -1368,11 +949,11 @@ const CardNavigator = ({ setLoading }) => {
       case "tel":
       case "password":
         const value =
-          currentCardIndex === 5
+          currentCardIndex === 6
             ? card6Values[element.placeholder]
             : card7Values[element.placeholder];
         const handleChange =
-          currentCardIndex === 5 ? handleCard6Change : handleCard7Change;
+          currentCardIndex === 6 ? handleCard6Change : handleCard7Change;
         return (
           <div key={index} className="formElement  ">
             <form action="" onSubmit={handleSignUp}>
@@ -1779,9 +1360,7 @@ const CardNavigator = ({ setLoading }) => {
                               className="tick-icon select-none "
                             />
                           </div>
-                          <p className="text-xs sm:text-sm">
-                            {familyMembers} Members
-                          </p>
+                        
                         </>
                       )}
                     </div>
@@ -1806,7 +1385,7 @@ const CardNavigator = ({ setLoading }) => {
                               value={selectedServings.split(" ")[0] || ""}
                               onChange={(e) =>
                                 setSelectedServings(
-                                  e.target.value + " servings"
+                                  e.target.value + "  Person"
                                 )
                               }
                               className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-Text1"
@@ -1820,29 +1399,7 @@ const CardNavigator = ({ setLoading }) => {
                             </select>
                           </div>
 
-                          {/* Dropdown for family members */}
-                          <div className="mt-4">
-                            <label
-                              htmlFor="familyMembers"
-                              className="block text-gray-700"
-                            >
-                              Family Members:
-                            </label>
-                            <select
-                              id="familyMembers"
-                              value={familyMembers}
-                              onChange={(e) =>
-                                setFamilyMembers(Number(e.target.value))
-                              }
-                              className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-Text1"
-                            >
-                              {[...Array(19).keys()].map((num) => (
-                                <option key={num} value={num + 2}>
-                                  {num + 2}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                         
 
                           <div className="mt-4 flex justify-end space-x-2">
                             <button
@@ -2097,7 +1654,24 @@ const CardNavigator = ({ setLoading }) => {
                 </>
               ))}
 
-            {currentCardIndex === 5 && (
+
+              {currentCardIndex === 5 && (
+                 <div className="flex flex-wrap gap-2 mt-4">
+                 <button
+                   className="py-2 px-4 sm:px-12 select-none w-[100px] sm:w-[200px] box-border rounded-md sm:rounded-lg flex items-center justify-center bg-transparent text-P-white border-2 border-white hover:cursor-pointer text-white font-roboto font-medium text-xs sm:text-base"
+                   onClick={handleBack}
+                 >
+                   Back
+                 </button>
+                 <button
+                   className="py-2 px-10 select-none w-[100px] sm:w-[200px] box-border rounded-md sm:rounded-lg flex items-center justify-center bg-white text-P-Green1 shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-xs sm:text-base"
+                   onClick={handleNext}
+                 >
+                   Next
+                 </button>
+               </div>
+              )}
+            {currentCardIndex === 6 && (
               <>
                 <div className="flex flex-col flex-wrap mt-4 gap-2 ">
                   {eror && <p className="text-red-500 ">{eror}</p>}
@@ -2129,20 +1703,8 @@ const CardNavigator = ({ setLoading }) => {
               </>
             )}
 
-            {currentCardIndex === 6 && !isLoggedIn && ""}
-            {currentCardIndex === 6 && !isLoggedIn && (
-              <div className="flex flex-wrap  mt-4 gap-2 justify-between ">
-                <a className="text-white  order-2 " href="/">
-                  Forgot password?
-                </a>
-                <button
-                  className="py-2 order-1 px-12 w-[100px] sm:w-[200px] box-border select-none rounded-lg flex items-center justify-center bg-transparent text-P-white border-2 border-white  hover:cursor-pointer text-white font-roboto font-medium text-base"
-                  onClick={() => handleLogin()}
-                >
-                  Login
-                </button>
-              </div>
-            )}
+           
+           
           </div>
         </div>
       )}

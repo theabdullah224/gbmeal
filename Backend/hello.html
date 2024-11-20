@@ -1,79 +1,497 @@
-@app.route('/generate', methods=['OPTIONS', 'POST'])
-def generate_meal_plan():
-    if request.method == 'OPTIONS':
-        response = jsonify({})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-        return response
+<!DOCTYPE html>
+<html lang="en">
 
-    try:
-        html_template = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>{title}</title>
-        </head>
-        <body>
-            <img src="https://www.gbmeals.com/static/media/logo2.2cc494b3c43bf1131ac7.png" 
-                 alt="Logo" 
-                 style="display: block; margin: 10px auto; width: 100px; height: auto;" />
-            {content}
-        </body>
-        </html>
-        """
-        
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<body>
+   <style>
+      h1 {
+         text-align: center;
+         color: #2d3748;
+         font-size: 24px;
+         margin-bottom: 20px;
+         text-transform: uppercase;
+         letter-spacing: 0.1em;
+      }
+
       
-        for i in range(servings):
-            prompt = ( """)
+      .maindiv {
+         width: 100%;
+         margin: 0 auto;
+         padding: 15px;
+         box-sizing: border-box;
+      }
 
-        response = client.chat.completions.create(
-            model="gpt-4o-2024-08-06",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        f"""
-You are a meal planning assistant. Provide the meal plan in HTML format only, with no additional commentary. The plan should be for {servings} servings, where each (total serving's) total calories must  equals to {total_calories} for example the servings are {servings} and demanding calories are {total_calories} so you have to design the meal plan as where the total sevings/meals calories should be equal to the {total_calories}. Design a balanced meal plan that includes lean protein, healthy fats, whole grains, and vegetables. Each recipe should list precise ingredient measurements to meet the calorie goal. Ensure a good macronutrient balance in each dish, with a clear calorie breakdown per meal and per ingredient where possible.
-"""
+      .firsttable {
+         page-break-after: always;
+       
+         width: 100%;
+         border-collapse: separate;
+         border-spacing: 0;
+         background: white;
+         border-radius: 12px;
+         overflow: hidden;
+      
+         margin-bottom: 40px;
+      }
+      .firsttable tbody tr{
+         border-bottom: 2px solid black;
+      }
 
-                        f"Ensure the meal plan consists of exactly {servings} meals, each corresponding to one serving. "
-                        "Follow the provided structure and do not include any additional information, headers, or categories like 'breakfast' or 'lunch'. "
-                        "Avoid using escape characters such as '\\n' or '\\'. Only use the specified HTML tags."
-                    )
-                },
-                {"role": "user", "content": prompt}
-            ],
-        )
-        
-        meal_plan_content = response.choices[0].message.content.replace('```html', '').replace('```', '').strip()
-        
-        
-        # Split content at the shopping list header
-        split_marker = '<h1>Weekly Shopping List</h1>'
-        parts = meal_plan_content.split(split_marker)
+      .firsttable thead tr th {
+         width: 33.33%;
+         background-color: #738065;
+         color: white;
+         text-transform: uppercase;
+         letter-spacing: 0.05em;
+         padding: 16px 12px;
+         font-size: 14px;
+         border-right: 1px solid rgba(255, 255, 255, 0.2);
+      }
 
-        # Generate meal plan PDF
-        meal_plan_html = html_template.replace("{content}", parts[0]).replace("{title}", "Meal Plan")
-        meal_plan_pdf = pdfkit.from_string(meal_plan_html, False, configuration=config)
-        meal_plan_base64 = base64.b64encode(meal_plan_pdf).decode('utf-8')
+      .firstcolumn {
+         padding: 20px 16px;
+         border-right: 2px solid #e5e7eb;
+         border-left: 2px solid #e5e7eb;
+         
+         background-color: white;
+         font-size: 13px;
+         vertical-align: top;
+      }
 
-        # Generate shopping list PDF
-        shopping_list_html = html_template.replace("{content}", split_marker + parts[1]).replace("{title}", "Shopping List")
-        shopping_list_pdf = pdfkit.from_string(shopping_list_html, False, configuration=config)
-        shopping_list_base64 = base64.b64encode(shopping_list_pdf).decode('utf-8')
+      .firstcolumndiv {
+         background-color: #f8fafc;
+         padding: 12px;
+         border-radius: 8px;
+         margin-bottom: 16px;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .meal {
+         font-size: 13px;
+         color: #313131;
+         font-weight: 600;
+         display: block;
+         margin-bottom: 4px;
+      }
+
+      .maindish {
+         font-size: 16px;
+         font-weight: 600;
+         color: #313131;
+         margin: 8px 0 4px 0;
+      }
+
+      .sidedish {
+         font-size: 14px;
+         font-weight: 500;
+         color: #666;
+         font-style: italic;
+         margin: 4px 0 8px 0;
+      }
+
+      .timetable {
+         width: 100%;
+         margin: 16px 0;
+         border-radius: 8px;
+         overflow: hidden;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+         border-collapse: collapse;
+         background-color: #f8fafc;
+      }
+
+      .timetable thead tr th {
+         background-color: #A6AE9D;
+         color: #313131;
+         font-size: 14px;
+         padding: 8px;
+         border: 1px solid #d1d5db;
+         width: 33%;
+      }
+
+      .timetable tbody tr td {
+         font-size: 14px;
+         text-align: center;
+         padding: 8px;
+         border: 1px solid #d1d5db;
+      }
+
+      h5 {
+         font-size: 14px;
+         font-weight: 600;
+         color: #313131;
+         margin: 12px 0 8px 0;
+         background-color: #f3f4f6;
+         padding: 8px;
+         border-radius: 6px;
+      }
+
+      .nutritable {
+         width: 100%;
+         margin: 8px 0;
+         border-radius: 8px;
+         overflow: hidden;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+         border-collapse: collapse;
+         background-color: #f8fafc;
+      }
+
+      .nutritable thead tr th {
+         background-color: #A6AE9D;
+         color: #313131;
+         font-size: 14px;
+         padding: 8px;
+         border: 1px solid #d1d5db;
+         width: 25%;
+      }
+
+      .nutritable tbody tr td {
+         font-size: 14px;
+         text-align: center;
+         padding: 8px;
+         border: 1px solid #d1d5db;
+      }
+
+      .secondcolumn {
+         padding: 20px 16px;
+         border-right: 2px solid #e5e7eb;
+         background-color: white;
+         font-size: 13px;
+         vertical-align: top;
+      }
+
+      .secondcolumn div {
+         background-color: #f3f4f6;
+         padding: 16px;
+         border-radius: 8px;
+         margin-bottom: 16px;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .secondcolumn h6 {
+         margin: 0 0 12px 0;
+         font-size: 14px;
+         color: #313131;
+         font-weight: 600;
+      }
+
+      .secondcolumn ol {
+         padding-left: 20px;
+         color: #4a5568;
+         margin: 0;
+      }
+
+      .secondcolumn li {
+         margin-bottom: 8px;
+         font-size: 14px;
+      }
+
+      .secondcolumn p {
+         color: #4a5568;
+         line-height: 1.6;
+         margin: 0;
+         font-size: 14px;
+      }
+
+      .tabletwo {
+         width: 100%;
+         border-collapse: separate;
+         border-spacing: 0;
+         background: white;
+         border-radius: 12px;
+         overflow: hidden;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .tabletwo thead tr th {
+         padding: 16px;
+         text-align: left;
+         background-color: #738065;
+         color: white;
+         font-size: 14px;
+         text-transform: uppercase;
+         letter-spacing: 0.05em;
+         width: 20%;
+         border-right: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .tabletwo tbody tr td {
+         padding: 15px;
+      }
+
+      .tablethree {
+         width: 100%;
+         border-collapse: collapse;
+         background-color: white;
+         border-radius: 8px;
+         overflow: hidden;
+         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .tablethree thead tr th {
+         padding: 12px;
+         text-align: left;
+         border-bottom: 1px solid #d1d5db;
+         font-size: 13px;
+         color: #ffffff;
+      }
+
+      .tablethree tbody tr td {
+         padding: 12px;
+         color: #4a5568;
+         border-bottom: 1px solid #e5e7eb;
+         font-size: 13px;
+      }
+
+      .container {
+         max-width: 800px;
+         margin: auto;
+      }
+
+      .section {
+         margin-bottom: 20px;
+      }
+
+      .section h2 {
+         font-size: 1.2em;
+         margin-bottom: 10px;
+         font-weight: bold;
+      }
+
+      ul {
+         list-style-type: disc;
+         padding-left: 20px;
+         margin: 0;
+      }
 
 
 
 
-        return jsonify({
-            "meal_plan_pdf": meal_plan_base64,
-            "shopping_list_pdf": shopping_list_base64
-        })
-        
-    except Exception as e:
-        error_message = str(e)
-        logging.error('Error generating response: %s', error_message)
-        return jsonify({"error": error_message}), 500
+
+      body {
+         font-family: Arial, sans-serif;
+         background-color: #fff;
+         color: #333;
+         margin: 0;
+         padding: 20px;
+      }
+
+  
+      h1 {
+         text-align: center;
+         color: #333;
+         font-size: 2rem;
+         margin-bottom: 20px;
+      }
+
+      .container22 {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 30px;
+         max-width: 900px;
+         margin: 0 auto;
+      }
+
+      .column22 {
+         flex: 1;
+         min-width: 250px;
+      }
+
+      .category22 {
+         margin-bottom: 20px;
+         width: fit-content;
+      }
+
+      .category22 h5 {
+         font-size: 1.3rem;
+         color: #333;
+         font-weight: bold;
+         margin: 0 0 10px;
+      }
+
+      .category22 ul {
+         list-style-type: disc;
+         padding-left: 20px;
+         margin: 0;
+      }
+
+      .category22 li {
+         font-size: 0.9rem;
+         margin-bottom: 5px;
+      }
+   </style>
+
+
+
+   <div>
+
+
+
+      <h1>Meal Plan</h1>
+      <div class="maindiv">
+
+         <div class="upone">
+
+            <h2>Day $</h2>
+            <table class="firsttable">
+
+               <thead>
+                  <tr>
+                     <th><b>Meals</b></th>
+                     <th><b>Ingredients</b></th>
+                     <th><b>Instructions</b></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr class="trclass" >
+
+                     <td class="firstcolumn">
+                        <!-- Meal Info Section -->
+                        <div class="firstcolumndiv">
+                           <span class="meal">Meal $1</span>
+                           <h3 class="maindish">[Main Dish Name]</h3>
+                           <h4 class="sidedish">[Side Dish Name]</h4>
+                        </div>
+
+                        <!-- Time Table -->
+                        <table class="timetable">
+                           <thead>
+                              <tr>
+                                 <th>Prep</th>
+                                 <th>Cook</th>
+                                 <th>Total</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td>[Prep time]</td>
+                                 <td>[Cook time]</td>
+                                 <td>[Total time]</td>
+                              </tr>
+                           </tbody>
+                        </table>
+
+                        <!-- Nutrition Table -->
+                        <div style="margin-top: 16px;">
+                           <h5>Nutritional Information</h5>
+                           <table class="nutritable">
+                              <thead>
+                                 <tr>
+                                    <th></th>
+                                    <th>Main</th>
+                                    <th>Side</th>
+                                    <th>Total</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr>
+                                    <td>[Nutrition value]</td>
+                                    <td>[Value]</td>
+                                    <td>[Value]</td>
+                                    <td>[Value]</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                     </td>
+
+                     <!-- Ingredients Column -->
+                     <td class="secondcolumn">
+                        <div>
+                           <h6>Main Dish Ingredients</h6>
+                           <ol>
+                              <li>[Ingredient value]</li>
+                           </ol>
+                        </div>
+                        <div>
+                           <h6>Side Dish Ingredients</h6>
+                           <ol>
+                              <li>[Ingredient value]</li>
+                           </ol>
+                        </div>
+                     </td>
+
+                     <!-- Instructions Column -->
+                     <td class="secondcolumn">
+                        <div>
+                           <h6>Main Dish Instructions</h6>
+                           <p>[Instructions value]</p>
+                        </div>
+                        <div>
+                           <h6>Side Dish Instructions</h6>
+                           <p>[Instructions value]</p>
+                        </div>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+            
+         </div>
+
+
+      
+         <h1>Weekly Shopping List</h1>
+
+         <div class="container22">
+            <div class="column22">
+               <div class="category22">
+                  <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
+                  <ul>
+                     <li>
+                       itemname
+                     </li>
+                  </ul>
+               </div>
+
+               <div class="category22">
+                  <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
+                  <ul>
+                     <li>
+                        item
+                     </li>
+                  </ul>
+               </div>
+            </div>
+
+            <div class="column22">
+               <div class="category22">
+                  <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
+                  <ul>
+                     <li>
+                  item name
+                     </li>
+                  </ul>
+               </div>
+
+               <div class="category22">
+                  <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
+                  <ul>
+                     <li>
+                        item name
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+
+
+
+      </div>
+
+
+
+   </div>
+   </div>
+   </div>
+
+
+
+</body>
+
+</html>
+
 

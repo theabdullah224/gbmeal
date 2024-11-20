@@ -47,13 +47,13 @@ import re
 import pdfkit
 import boto3
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
+import json
 
 
 
 
-
-# config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
+config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
 # Load environment variables from a .env file
 load_dotenv()
 
@@ -1013,6 +1013,154 @@ def upload_pdfs_to_s3(user_id, meal_plan_base64, shopping_list_base64):
 
 
 
+
+def parse_meal_plan_to_html(json_response):
+    try:
+        # Attempt to load the JSON response
+        data = json.loads(json_response)
+    except json.JSONDecodeError as e:
+        print(f"JSON parsing error: {e}")
+        return "<p>Error: Invalid JSON data.</p>"
+
+    # Start building the HTML content
+    html_output = '<div class="maindiv">'
+
+    # Loop through each day in the meal plan
+    for day in data.get('mealPlan', []):
+        html_output += f"""
+            <div class="upone">
+                <h2>Day {day.get('day')}</h2>
+                <table class="firsttable">
+                    <thead>
+                        <tr>
+                            <th><b>Meals</b></th>
+                            <th><b>Ingredients</b></th>
+                            <th><b>Instructions</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        """
+        
+        # Loop through each meal
+        for idx, meal in enumerate(day.get('meals', []), start=1):
+            html_output += f"""
+                <tr class="trblock">
+                    <td class="firstcolumn">
+                        <div class="firstcolumndiv">
+                            <span class="meal">Meal {idx}</span>
+                            <h3 class="maindish">{meal['mainDish'].get('name')}</h3>
+                            <h4 class="sidedish">{meal['sideDish'].get('name')}</h4>
+                        </div>
+                        <table class="timetable">
+                            <thead>
+                                <tr>
+                                    <th>Prep</th>
+                                    <th>Cook</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{meal['mainDish'].get('prepTime')}</td>
+                                    <td>{meal['mainDish'].get('cookTime')}</td>
+                                    <td>{meal['mainDish'].get('totalTime')}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 16px;">
+                            <h5>Nutritional Information</h5>
+                            <table class="nutritable">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Main</th>
+                                        <th>Side</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Calories</td>
+                                        <td>{meal['mainDish'].get('calories')}</td>
+                                        <td>{meal['sideDish'].get('calories')}</td>
+                                        <td>{meal['mainDish'].get('calories', 0) + meal['sideDish'].get('calories', 0)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                    <td class="secondcolumn">
+                        <div>
+                            <h6>Main Dish Ingredients</h6>
+                            <ol>
+            """
+            
+            # Main Dish Ingredients
+            html_output += "".join(f"<li>{ingredient['name']} - {ingredient['quantity']}</li>" for ingredient in meal['mainDish'].get('ingredients', []))
+            
+            html_output += """
+                            </ol>
+                        </div>
+                        <div>
+                            <h6>Side Dish Ingredients</h6>
+                            <ol>
+            """
+            
+            # Side Dish Ingredients
+            html_output += "".join(f"<li>{ingredient['name']} - {ingredient['quantity']}</li>" for ingredient in meal['sideDish'].get('ingredients', []))
+            
+            html_output += f"""
+                            </ol>
+                        </div>
+                    </td>
+                    <td class="secondcolumn">
+                        <div>
+                            <h6>Main Dish Instructions</h6>
+                            <p>{meal['mainDish'].get('instructions')}</p>
+                        </div>
+                        <div>
+                            <h6>Side Dish Instructions</h6>
+                            <p>{meal['sideDish'].get('instructions')}</p>
+                        </div>
+                    </td>
+                </tr>
+            """
+        
+        html_output += """
+                    </tbody>
+                </table>
+            </div>
+        """
+
+    # Add the shopping list section
+    html_output += """
+        <h1>Weekly Shopping List</h1>
+        <div class="container22">
+    """
+    
+    # Loop through the shopping list categories
+    for category in data.get('shoppingList', []):
+        html_output += f"""
+            <div class="column22">
+                <div class="category22">
+                    <span>{category['category']}</span>
+                    <ul>
+        """
+        
+        # Loop through items in each category
+        html_output += "".join(f"<li>{item['name']} - {item['quantity']}</li>" for item in category.get('items', []))
+        
+        html_output += """
+                    </ul>
+                </div>
+            </div>
+        """
+    
+    html_output += "</div></div>"  # Closing tags for container22 and maindiv
+    
+    return html_output
+
+
 @app.route('/generate', methods=['OPTIONS', 'POST'])
 def generate_meal_plan():
     if request.method == 'OPTIONS':
@@ -1021,56 +1169,16 @@ def generate_meal_plan():
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
         return response
 
-    try:
-        html_template = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>{title}</title>
-        </head>
-        <body>
-            <img src="https://www.gbmeals.com/static/media/logo2.2cc494b3c43bf1131ac7.png" 
-                 alt="Logo" 
-                 style="display: block; margin: 10px auto; width: 100px; height: auto;" />
-            {content}
-        </body>
-        </html>
-        """
-        
-        data = request.get_json()
-        food_preferences = data.get('preferredMeal')
-        allergies = data.get('allergies', [])
-        dislikes = data.get('dislikes', [])
-        dietary_restrictions = data.get('dietaryRestrictions', [])
-        servings = data.get('servings')
-        total_calories = data.get('total_calories')
-        id=data.get('id')
-       
-        match = re.match(r"^(\d+)", servings)
-        if match:
-            servings = int(match.group(1))
-        else:
-            raise ValueError("Unexpected serving size format")
-
-        # if not dietary_restrictions or not servings:
-        #     return jsonify({"error": "Invalid input: preferredMeal and servings are required."}), 400
-
-
-        meal_plan = ""  # Initialize an empty string to store the meal plan
-
-       
-
-        
-        data = """
+    styledata="""
+    body {font-family: Arial, sans-serif;background-color: #fff;color: #333;margin: 0;padding: 20px;}
+              .trblock{border-bottom: 2px solid #e5e7eb;}
               h1{text-align: center; color: #2d3748; font-size: 24px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.1em;}
         .maindiv{width: 100%; margin: 0 auto; padding: 15px; box-sizing: border-box;}
-        .firsttable{width: 100%; border-collapse: separate; border-spacing: 0; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-bottom: 40px;}
+        .firsttable{page-break-after: always; width: 100%; border-collapse: separate; border-spacing: 0; background: white; border-radius: 12px; overflow: hidden; margin-bottom: 40px;}
         .firsttable thead tr th{
             width: 33.33%; background-color: #738065; color: white; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 12px; font-size: 14px; border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .firstcolumn{padding: 20px 16px; border-right: 1px solid #e5e7eb; background-color: white; font-size: 13px; vertical-align: top;}
+        .firstcolumn{padding: 20px 16px; border-right: 2px solid #e5e7eb;  border-left: 2px solid #e5e7eb; background-color: white; font-size: 13px; vertical-align: top;}
         .firstcolumndiv{background-color: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);}
         .meal{font-size: 13px; color: #313131; font-weight: 600; display: block; margin-bottom: 4px;}
         .maindish{font-size: 16px; font-weight: 600; color: #313131; margin: 8px 0 4px 0;}
@@ -1082,7 +1190,7 @@ def generate_meal_plan():
         .nutritable{width: 100%; margin: 8px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-collapse: collapse; background-color: #f8fafc;}
         .nutritable thead tr th{background-color: #A6AE9D; color: #313131; font-size: 14px; padding: 8px; border: 1px solid #d1d5db; width: 25%;}
         .nutritable tbody tr td{font-size: 14px; text-align: center; padding: 8px; border: 1px solid #d1d5db;}
-        .secondcolumn{padding: 20px 16px; border-right: 1px solid #e5e7eb; background-color: white; font-size: 13px; vertical-align: top;}
+        .secondcolumn{padding: 20px 16px; border-right: 2px solid #e5e7eb; background-color: white; font-size: 13px; vertical-align: top;}
         .secondcolumn div{background-color: #f3f4f6; padding: 16px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);}
         .secondcolumn h6{margin: 0 0 12px 0; font-size: 14px; color: #313131; font-weight: 600;}
         .secondcolumn ol{padding-left: 20px; color: #4a5568; margin: 0;}
@@ -1103,270 +1211,234 @@ def generate_meal_plan():
             list-style-type: disc;
             padding-left: 20px;
             margin: 0;
-        }"""
-        for i in range(servings):
-            prompt = ( 
-                    f""" 
-    Create a detailed meal plan for a {dietary_restrictions} diet with exactly {servings} distinct meals.
-- Each meal should follow the structure provided, and you must include a shopping list.
--Must avoid extra spaces on start dont repeat the headers (MEALS INGREDIENTS INSTRUCTIONS) on each page it should be only first 
-- Ensure that the generated meals take into account the following restrictions:
-  - Must avoid these allergies: {', '.join(allergies)}.
-  - Must exclude these disliked foods: {', '.join(dislikes)}.
-- The {servings} servings refer to the number of **distinct meals to generate**.
-- Generate the meal plan in pure HTML format without any additional information or formatting characters like "\\n" or "\\".
-- Use only the following HTML structure for each meal, and ensure you repeat this for each of the {servings} meals.
--IMPORTANT: Total meals: {servings} servings must equal {total_calories} calories means each meal should contain that much coloreis that should be equal the the {total_calories} .
-for example if there is 2 meals or 2 sevings and coloreis are  (Recomended (2000 - 2500 calories)) then two meals total colories should equal to the (2000 to 2500) 
--Please use detail and max content in the instructions
--each meal should be populate on 1 'A4' page size (means use max details)
--include each and every ingredients in the meal should list in the nutrition information each and every even little ingredients should show in the nutrition information 
-
-
-
-
-
-
-
-
-
-
-
-  <div >
-    
-            <!-- Meal Plan Section -->
-             <style>
-        {data}
-    </style>
-    <h1>Meal Plan</h1>
-    <div class="maindiv">
-     
-        <table class="firsttable">
-        [never repeat this header this should be only on first page not on others page]
-            <thead>
-                <tr>
-                    <th ><b>Meals</b></th>
-                    <th ><b>Ingredients</b></th>
-                    <th ><b>Instructions</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr >
-                    [Repeat this <tr> block for {servings} time for each meal]
-                        {''.join(f'''
-                    <td class="firstcolumn">
-                        <!-- Meal Info Section -->
-                        <div class="firstcolumndiv">
-                            <span class="meal">Meal {i+1}</span>
-                            <h3 class="maindish" >[Main Dish Name]</h3>
-                            <h4  class="sidedish">[Side Dish Name]</h4>
-                        </div>
-
-                        <!-- Time Table -->
-                        <table class="timetable">
-                            <thead>
-                                <tr>
-                                    <th >Prep</th>
-                                    <th >Cook</th>
-                                    <th >Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td >[Prep time]</td>
-                                    <td >[Cook time]</td>
-                                    <td >[Total time]</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- Nutrition Table -->
-                        <div style="margin-top: 16px;">
-                            <h5 >Nutritional Information</h5>
-                            [repeat for all the detailed nutrition like protien carb iron vitamin colories... etc as much as in the meal and repeat the tr for each nutrition as much as nutrition present in the meal pick all of them and show here]
-                            [IMPORTANT: Total meals: {servings} servings must equal {total_calories} calories means each meal should contain that much coloreis that should be equal the the total {total_calories}]
-                            <table class="nutritable">
-                                <thead>
-                                    <tr>
-                                        <th ></th>
-                                        <th >Main</th>
-                                        <th >Side</th>
-                                        <th >Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                [include every single nutrition here that are availible in the meal dont miss any add minimum 10, like Vitamin A,Vitamin b,Vitamin c,Vitamin d,Vitamin e,Zinc,iron,Dietary Fiber,Omega-3 Fatty Acids and more that are availible in the meal means minimum add 10, these are just for example you have to add that are availible in the  meal also make sure you add 100% accurate (use only international units that can be understand by simple user)]
-                                    <tr>
-                                        <td >[Nutrition]</td>
-                                        <td >[Value]</td>
-                                        <td>[Value]</td>
-                                        <td >[Value]</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                    
-                    <!-- Ingredients Column -->
-                    <td class="secondcolumn">
-                        <div >
-                            <h6 >Main Dish Ingredients</h6>
-                            [Provide detail ingredients to make that dish]
-                            <ol>
-                                <li >[Ingredient]</li>
-                            </ol>
-                        </div>
-                        <div >
-                            <h6>Side Dish Ingredients</h6>
-                            [Provide detail ingredients to make that dish]
-                            <ol >
-                                <li >[Ingredient]</li>
-                            </ol>
-                        </div>
-                    </td>
-
-                    <!-- Instructions Column -->
-                    [main dish and side dish instructions should not be exceeded ]
-                    <td class="secondcolumn">
-                        <div >
-                            <h6 >Main Dish Instructions</h6>
-                            [Provide detail Instructions to make that dish as a user who didnot even know cooking can easily make this dish (provide detailed recipes)]
-                            <p >[Instructions (detailed recipes, use maximum lines)]</p>
-                        </div>
-                        <div >
-                            <h6>Side Dish Instructions</h6>
-                            [Provide detail Instructions to make that dish as a user who didnot even know cooking can easily make this dish (provide detailed recipes)]
-                            <p >[Instructions (detailed recipes) ]</p>
-                        </div>
-                    </td>
-                </tr>
-                ''' for i in range(servings))}
-            </tbody>
-        </table>
-
-
-        <!-- Shopping List Section -->
-         <h1 >Weekly Shopping List</h1>
-         [Plese provide detailed shopping list according to the meals never miss single items ]
-    [NEVER remove style tag and its content from here]
-    [only and only use the international units , like kg,g,mg, litters,dozen etc.. NEVER USE quantity like i.e: 4 chicken , always use the international units like kg,g,mg, litters,dozen etc..]
-    <style>
-      body """"{font-family: Arial, sans-serif;background-color: #fff;color: #333;margin: 0;padding: 20px;}""""
-      h1 {text-align: center;color: #333;font-size: 2rem;margin-bottom: 20px;}
-      .container {display: flex;flex-wrap: wrap;gap: 30px;max-width: 900px;margin: 0 auto;}
-      .column {flex: 1;min-width: 250px;}
-      .category {margin-bottom: 20px;}
-      .category h5 {font-size: 1.3rem;color: #333;font-weight: bold;margin: 0 0 10px;}
-      .category ul {
-        list-style-type: disc;
-        padding-left: 20px;
-        margin: 0;
-      }
-      .category li {
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-      }
-    </style>
-    [Must Generate a Complete "Weekly" Shopping List:Please provide a detailed
-    shopping list for a full week of meals, ensuring it includes all necessary
-    ingredients for each meal.]
-
-    <div class="container">
-      <div class="column">
-        <div class="category">
-          <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
-          <ul>
-            <li>
-              [items name and weekly quantity(please provide the weekly quantity
-              means that one multiply to 7 to get weekly quantity of each i.e if
-              in meal we use 1 kg oil then you have to multiply 1 with 7 to get
-              weekly quantity [you dont have to show the calculations , just
-              show the value of weekly quantity] please use the international
-              units that any one can understand )]
-            </li>
-          </ul>
-        </div>
-
-        <div class="category">
-          <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
-          <ul>
-            <li>
-              [items name and weekly quantity(please provide the weekly quantity
-              means that one multiply to 7 to get weekly quantity of each i.e if
-              in meal we use 1 kg oil then you have to multiply 1 with 7 to get
-              weekly quantity [you dont have to show the calculations , just
-              show the value of weekly quantity] please use the international
-              units that any one can understand )]
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="category">
-          <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
-          <ul>
-            <li>
-              [items name and weekly quantity(please provide the weekly quantity
-              means that one multiply to 7 to get weekly quantity of each i.e if
-              in meal we use 1 kg oil then you have to multiply 1 with 7 to get
-              weekly quantity [you dont have to show the calculations , just
-              show the value of weekly quantity] please use the international
-              units that any one can understand )]
-            </li>
-          </ul>
-        </div>
-
-        <div class="category">
-          <h5>[items type i.e Vegetables,Fruits,Meat,Seafood etc]</h5>
-          <ul>
-            <li>
-              [items name and weekly quantity(please provide the weekly quantity
-              means that one multiply to 7 to get weekly quantity of each i.e if
-              in meal we use 1 kg oil then you have to multiply 1 with 7 to get
-              weekly quantity [you dont have to show the calculations , just
-              show the value of weekly quantity] please use the international
-              units that any one can understand )]
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-       
-      
-    </div>
-</div>
-    </div>
-</div>
-
-    """
+        }
 
         
-    )
+
+
+      
+
+h1 {text-align: center;color: #333;font-size: 2rem;margin-bottom: 20px;}
+.container22 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    justify-content: space-between;
+}
+
+.column22 {
+
+    flex: 1 1 calc(50% - 20px); /* Ensures two columns with space in between */
+    box-sizing: border-box;
+
+    padding: 15px;
+   
+ 
+}
+
+      
+.category22 {margin-bottom: 20px;}
+.category22 span {font-size: 1.3rem;color: #333;font-weight: bold;margin: 0 0 10px;width: fit-content;}
+.category22 ul {
+list-style-type: disc;
+padding-left: 20px;
+margin: 0;
+}
+.category22 li {
+font-size: 0.9rem;
+margin-bottom: 5px;
+}"""
+    try:
+        html_template = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            
+        </head>
+        <body>
+        <style>
+         {styledata}
+
+        </style>
+            <img src="https://www.gbmeals.com/static/media/logo2.2cc494b3c43bf1131ac7.png" 
+                 alt="Logo" 
+                 style="display: block; margin: 10px auto; width: 100px; height: auto;" />
+                  <h1>Meal Plan</h1>
+                  
+           """" {content}""""
+        </body>
+        </html>
+        """
+        
+        data = request.get_json()
+       
+        allergies = data.get('allergies', [])
+        dislikes = data.get('dislikes', [])
+        dietary_restrictions = data.get('dietaryRestrictions', [])
+        servings = data.get('servings')
+        total_calories = data.get('total_calories')
+        mealperday=data.get('mealperday')
+        days=data.get('days')
+        id=data.get('id')
+       
+        match = re.match(r"^(\d+)", days)
+        if match:
+            days = int(match.group(1))
+        else:
+            raise ValueError("Unexpected serving size format")
+
+        if not dietary_restrictions:
+            return jsonify({"error": "Invalid input: preferredMeal and servings are required."}), 400
+
+   
+       
+       
+
+        
+     
+        prompt = (
+    f"""
+
+         MOST IMPORTANT: MUST PROVIDE THE COMPLETE MEAL PLAN ACCORDING TO {days}
+          never give meal plan less then the {days}
+    Create a detailed meal plan for a {dietary_restrictions} diet with exactly {mealperday} per day for {days} , for the {servings} that is  refers to the number of persons its means you have to generate every meal for the {servings} ,if there is for example two then you have to make it for 2 people.
+    - the most important point is:{servings} refers to the number of persons if there is {servings} you have to desgined the meal as it can be consumed by {servings} and each person should get the {total_calories}
+- Each meal should follow the structure provided, and you must include a exact accurate  shopping list  for complete {days} and while generating the shopping list you must consider the {servings} (number of persons) shopping list should must contain the accurate and should be in the international standar units like kg mg litter etc...
+- Ensure that the generated meals take into account the following restrictions:
+  - Must avoid these allergies: {allergies}.
+  - Must exclude these disliked foods: {dislikes}.
+
+- Use only the following  structure for each {days}, you must include the {mealperday} in every single day according to the provided {total_calories}, its means the number of total meals  in per day that is {mealperday}, its nutrition should must be equal to the {total_calories}.
+-Please use detail and max content in the instructions.
+
+
+
+Please generate a complete and detailed meal plan in **JSON format** with the following requirements:
+please give the proper json dont include ```json or ``` only give the json with no  extra or lest brackets 
+### Key Details:
+1. **Days**: The number of days is variable (e.g., {days}).
+2. **Meals per Day**: Variable, exactly {mealperday} meals per day.
+3. **Servings**: Each meal is designed for {servings} people.
+4. **Calories**: Each person must receive meals totaling {total_calories} calories daily.
+
+### Meal Structure:
+For each day ({days}), generate exactly {mealperday} meals with the following structure:
+- Each meal must include:
+  - **Main Dish** and **Side Dish**.
+  - **Time Estimates**:
+    - Preparation Time
+    - Cooking Time
+    - Total Time
+  - **Calories**:
+    - Calories for the Main Dish
+    - Calories for the Side Dish
+    - Total Meal Calories
+  - **Ingredients**:
+    - Detailed ingredient lists for both the Main Dish and the Side Dish, with precise quantities in international units (e.g., g, kg, ml, liters, dozen).
+  - **Cooking Instructions**:
+    - Detailed, step-by-step instructions for preparing both the Main Dish and Side Dish. These instructions must be comprehensive enough for someone with no cooking experience.
+
+### Additional Requirements:
+1. **Shopping List**:
+   - Generate a consolidated weekly shopping list for all ingredients required for the meal plan.
+   - Categorize the shopping list by item type (e.g., Vegetables, Fruits, Meat, etc.).
+   - Provide weekly quantities for each item in international units (e.g., kg, g, liters).
+
+2. **Restrictions**:
+   - Avoid the following allergens: {allergies}.
+   - Exclude these disliked foods: {dislikes}.
+
+### JSON Structure:
+The output must strictly adhere to the following format:
+
+```json
+""""""{
+  "mealPlan": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "meal": "Meal 1",
+          "mainDish": {
+            "name": "Main Dish Name",
+            "prepTime": "X min",
+            "cookTime": "Y min",
+            "totalTime": "Z min",
+            "calories": X,
+            "ingredients": [
+              {"name": "Ingredient1", "quantity": "value unit"},
+              {"name": "Ingredient2", "quantity": "value unit"}
+            ],
+            
+            "instructions": "Step-by-step instructions for the main dish [Provide detail Instructions to make that dish as a user who didnot even know cooking can easily make this dish (provide detailed recipes)]"
+          },
+          "sideDish": {
+            "name": "Side Dish Name",
+            "prepTime": "X min",
+            "cookTime": "Y min",
+            "totalTime": "Z min",
+            "calories": X,
+            "ingredients": [
+              {"name": "Ingredient1", "quantity": "value "},
+              {"name": "Ingredient2", "quantity": "value "}
+            ],
+            "instructions": "Step-by-step instructions for the side dish [Provide detail Instructions to make that dish as a user who didnot even know cooking can easily make this dish (provide detailed recipes)]"
+          }
+        },
+        {
+          "meal": "Meal 2",
+          "...": "Same structure as Meal 1"
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "meals": [
+        "... same structure as Day 1 meals"
+      ]
+    }
+  ],
+  "shoppingList": [
+    {
+      "category": "Category Name",
+      "items": [
+        {"name": "Item Name", "quantity": "value unit unit(use international standard units like kg,mg, litters etc... and provide accurate shoppin list  (use international standard units like kg,mg, litters etc... and provide accurate shoppin list "}
+      ]
+    }
+  ]
+}""""""
+""")
 
         response = client.chat.completions.create(
-            model="gpt-4o-2024-08-06",
+            model="gpt-4o",
             messages=[
                 {
                     "role": "system",
                     "content": (
-                        f"""
-You are a meal planning assistant. Provide the meal plan in HTML format only, with no additional commentary. The plan should be for {servings} servings, where each (total serving's) total calories must  equals to {total_calories} for example the servings are {servings} and demanding calories are {total_calories} so you have to design the meal plan as where the total sevings/meals calories should be equal to the {total_calories}. Design a balanced meal plan that includes lean protein, healthy fats, whole grains, and vegetables. Each recipe should list precise ingredient measurements to meet the calorie goal. Ensure a good macronutrient balance in each dish, with a clear calorie breakdown per meal and per ingredient where possible.
-"""
-
-                        f"Ensure the meal plan consists of exactly {servings} meals, each corresponding to one serving. "
+                        f"""You are a meal planning assistant. Provide the meal plan in JSON format only, with no additional commentary.MUST provide the meal plan for exact {days}  """
+                          "never use any thing that distroy the json or is structuring or give error"
+                          f"must provide the meal plan for exact {days}"
+                          f"MUST provide the shopping list for {days} and according to the number of persons that is {servings} "
+                        f"Ensure the meal plan consists of exactly {servings} peoples, each corresponding to one serving. "
                         "Follow the provided structure and do not include any additional information, headers, or categories like 'breakfast' or 'lunch'. "
-                        "Avoid using escape characters such as '\\n' or '\\'. Only use the specified HTML tags."
                     )
                 },
                 {"role": "user", "content": prompt}
             ],
         )
         
-        meal_plan_content = response.choices[0].message.content.replace('```html', '').replace('```', '').strip()
+        gpt_response = response.choices[0].message.content.replace('```json', ' ').replace('```', ' ').replace('...','').strip()
         
-        
+        meal_plan_content= parse_meal_plan_to_html(gpt_response)
+
+
+
+        print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",response.usage,"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+
         # Split content at the shopping list header
         split_marker = '<h1>Weekly Shopping List</h1>'
         parts = meal_plan_content.split(split_marker)
@@ -1385,7 +1457,7 @@ You are a meal planning assistant. Provide the meal plan in HTML format only, wi
     
         # Upload PDFs and get URLs
         
-        pdf_urls = upload_pdfs_to_s3(current_user, meal_plan_base64, shopping_list_base64)
+        pdf_urls = upload_pdfs_to_s3(id, meal_plan_base64, shopping_list_base64)
 
         
 
@@ -1465,7 +1537,9 @@ def show_user_data():
                 "food_allergy": user.food_allergy,
                 "servings": user.servings,
                 "dislikes": user.dislikes,
-                "total_calories": user.total_calories
+                "total_calories": user.total_calories,
+                "days": user.days,
+                "mealperday": user.mealperday
             }
             # Note: We're not including the password field for security reasons
             return jsonify(user_data)
@@ -1516,6 +1590,10 @@ def update_user_data():
             user.dislikes = data['dislikes']
         if 'total_calories' in data:
             user.total_calories = data['total_calories']
+        if 'days' in data:
+            user.days = data['days']
+        if 'mealperday' in data:
+            user.mealperday = data['mealperday']
 
         db.session.commit()
 
@@ -1574,12 +1652,13 @@ def signup():
         password = data.get('Password')
         phone = data.get('Phone')
         subject = data.get('Subject')
-        preferred_meal = data.get('preferredMeal')
+        mealperday=data.get('mealperday')
         dietary_restriction = data.get('dietaryRestriction')
         food_allergy = data.get('foodAllergy')
         servings = data.get('servings')
         dislikes = data.get('dislikes')
         total_calories = data.get('totalCalories')
+
 
         if not name or not email or not password:
             return jsonify({"error": "Invalid input: Name, email, and password are required."}), 400
@@ -1596,7 +1675,7 @@ def signup():
             password=hashed_password.decode('utf-8'),
             phone=phone,
             subject=subject,
-            preferred_meal=preferred_meal,
+            mealperday=mealperday,
             dietary_restriction=dietary_restriction,
             food_allergy=food_allergy,
             servings=servings,
