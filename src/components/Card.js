@@ -152,21 +152,21 @@ const cards = [
       {
         type: "radio",
         name: "servings",
-        label: "2 Person",
+        label: "2 People",
         image: servings,
         info: "",
       },
       {
         type: "radio",
         name: "servings",
-        label: "3 Person",
+        label: "3 People",
         image: servings,
         info: "",
       },
       {
         type: "radio",
         name: "servings",
-        label: "4 Person",
+        label: "4 People",
         image: servings,
         info: "",
       },
@@ -793,7 +793,8 @@ const CardNavigator = () => {
           return selecteddietaryRestrictions.length > 0;
         case 1:
           return selectedServings.length > 0;
-
+        case 5:
+          return mealperday !== ""
         default:
           return true; // For cards that don't require selection
       }
@@ -1313,10 +1314,10 @@ const CardNavigator = () => {
                       onClick={() => setIspopupOpen(true)}
                       className="relative select-none flex rounded-md group items-center cursor-pointer border-[1px] border-S-Orange text-white flex-col justify-center  w-20 h-20 sm:h-36 sm:w-36"
                     >
-                      {selectedServings === "1 Serving" ||
-                      selectedServings === "2 Servings" ||
-                      selectedServings === "3 Servings" ||
-                      selectedServings === "4 Servings" ||
+                      {selectedServings === "1 Person" ||
+                      selectedServings === "2 People" ||
+                      selectedServings === "3 People" ||
+                      selectedServings === "4 People" ||
                       selectedServings === "" ? (
                         ""
                       ) : (
@@ -1337,10 +1338,10 @@ const CardNavigator = () => {
                         className="w-5 sm:h-7 h-5 sm:w-7 "
                       />
                       <p className="select-none text-xs sm:text-base">Add</p>
-                      {selectedServings === "1 Serving" ||
-                      selectedServings === "2 Servings" ||
-                      selectedServings === "3 Servings" ||
-                      selectedServings === "4 Servings" || selectedServings === "" ? (
+                      {selectedServings === "1 Person" ||
+                      selectedServings === "2 People" ||
+                      selectedServings === "3 People" ||
+                      selectedServings === "4 People" || selectedServings === "" ? (
                         ""
                       ) : (
                         <>
@@ -1385,7 +1386,7 @@ const CardNavigator = () => {
                               value={selectedServings.split(" ")[0] || ""}
                               onChange={(e) =>
                                 setSelectedServings(
-                                  e.target.value + "  Person"
+                                  e.target.value + "  People"
                                 )
                               }
                               className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-Text1"

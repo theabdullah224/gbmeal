@@ -1,13 +1,29 @@
-import React, { useState } from "react"; // Importing React
+import React, { useEffect, useState } from "react"; // Importing React
 import "./cta.css"; // Importing the stylesheet for this component
 import { useNavigate } from "react-router-dom"; // Importing the useNavigate hook from react-router-dom for navigation
 
 function Cta(props) {
   const navigate = useNavigate(); // Initializing the navigate function
-
+ const [isLoggedIn, setIsLoggedIn] = useState(false);
+ useEffect(() => {
+  // Check localStorage for the "user" object
+  const user = localStorage.getItem("user");
+ 
+  if (user) {
+    setIsLoggedIn(true); // Set logged-in state to true if a user is found
+  } else {
+    setIsLoggedIn(false); // Set logged-in state to false if no user is found
+  }
+}, []);
   // Function to handle the "Contact Us" button click, navigates to the contact us page
   const handleContactUsClick = () => {
-    navigate("/myaccount");
+    if(isLoggedIn){
+
+      navigate("/myaccount");
+    }else{
+      navigate("/plans#form");
+
+    }
     localStorage.setItem("contact","contact")
   };
   const [formData, setFormData] = useState({

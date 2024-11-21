@@ -17,7 +17,7 @@ function Footer() {
     <footer className='footer'>
       <div className="fcol1">
         <img className='logof' src={Logo2} alt="Logo" />
-        <p className='footerp text-Text2 text-md font-bold' style={{margin:"20px 0px 0px 0px "}}>Get Control Our Your Health</p>
+        <p className='footerp text-Text2 text-md font-bold' style={{margin:"20px 0px 0px 0px "}}>Get Control Your Health</p>
         <p className='pt-4 text-Text1 text-xl font-bold'>Follow Us</p>
         <div className="logos  w-fit">
           <a href="https://www.facebook.com" className=' w-fit' target="_blank" rel="noopener noreferrer">

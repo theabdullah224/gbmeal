@@ -598,9 +598,9 @@ function Pref() {
              
               {renderMenuItem(
                 "servings",
-                "How many servings are required",
-                `${menuStates.servings.selected || "Select servings"}`,
-                ["1 person", "2 persons", "3 persons", "4 persons",]
+                "How Many Servings Do You Need?",
+                `${menuStates.servings.selected || "Select the number of servings you need per meal."}`,
+                ["1 Person", "2 People", "3 People", "4 People",]
               )}
               {renderMenuItem(
                 "allergy",

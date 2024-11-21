@@ -52,8 +52,8 @@ import json
 
 
 
-# config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
+config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
 # Load environment variables from a .env file
 load_dotenv()
 
@@ -1178,6 +1178,9 @@ def generate_meal_plan():
         .firsttable thead tr th{
             width: 33.33%; background-color: #738065; color: white; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 12px; font-size: 14px; border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
+        .firsttable tbody tr td {
+  border-bottom: 2px solid #e5e7eb;
+}
         .firstcolumn{padding: 20px 16px; border-right: 2px solid #e5e7eb;  border-left: 2px solid #e5e7eb; background-color: white; font-size: 13px; vertical-align: top;}
         .firstcolumndiv{background-color: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);}
         .meal{font-size: 13px; color: #313131; font-weight: 600; display: block; margin-bottom: 4px;}
@@ -1862,7 +1865,7 @@ html_contenttosend = """
  <tr><td align="left" style="padding:0;Margin:0;padding-right:20px;padding-left:20px;padding-top:15px"><!--[if mso]><table style="width:560px" cellpadding="0" cellspacing="0"><tr><td style="width:160px" valign="top"><![endif]--><table cellpadding="0" cellspacing="0" align="left" class="es-left" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left"><tbody><tr><td align="left" class="es-m-p20b" style="padding:0;Margin:0;width:160px"><table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tbody><tr><td align="center" style="padding:0;Margin:0;font-size:0"><a target="_blank" href="https://www.gbmeals.com/tryfreefor30-days" style="mso-line-height-rule:exactly;text-decoration:underline;color:#2CB543;font-size:14px"><img width="160" src="https://fnzaeju.stripocdn.email/content/guids/CABINET_9d51d0cb43d7215811c5045a243cd2f8867c5aa07c9879c4bb732f8814b45f47/images/pic_1.png" alt="" class="adapt-img" style="display:block;font-size:14px;border:0;outline:none;text-decoration:none"></a>
 </td></tr></tbody></table></td></tr></tbody></table>
  <!--[if mso]></td><td style="width:20px"></td><td style="width:380px" valign="top"><![endif]--><table align="right" cellpadding="0" cellspacing="0" class="es-right" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right"><tbody><tr><td align="left" style="padding:0;Margin:0;width:380px"><table width="100%" role="presentation" cellpadding="0" cellspacing="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tbody><tr><td align="left" class="es-text-8700" style="padding:0;Margin:0;padding-top:15px"><h2 class="es-text-mobile-size-20" style="Margin:0;font-family:arial, 'helvetica neue', helvetica, sans-serif;mso-line-height-rule:exactly;letter-spacing:0;font-size:20px;font-style:normal;font-weight:normal;line-height:24px;color:#ffffff"><strong>Weekly Meal Plan</strong></h2></td></tr>
- <tr><td align="left" style="padding:0;Margin:0;padding-top:10px"><p style="Margin:0;mso-line-height-rule:exactly;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:21px;letter-spacing:0;color:#ffffff;font-size:14px">&ZeroWidthSpace;A breakdown of meals for each day, so you can relax knowing your meals are sorted.</p></td></tr>
+ <tr><td align="left" style="padding:0;Margin:0;padding-top:10px"><p style="Margin:0;mso-line-height-rule:exactly;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';line-height:21px;letter-spacing:0;color:#ffffff;font-size:14px">A breakdown of meals for each day, so you can relax knowing your meals are sorted.</p></td></tr>
  <tr><td align="left" style="padding:0;Margin:0;padding-bottom:25px;padding-top:15px"><span class="es-button-border" style="border-style:solid;border-color:#2CB543;background:transparent;border-width:0px 0px 2px 0px;display:inline-block;border-radius:5px;width:auto;border-top:2px solid #ffffff;border-right:2px solid #ffffff;border-bottom:2px solid #ffffff;border-left:2px solid #ffffff"><a href="https://www.gbmeals.com/tryfreefor30-days" target="_blank" class="es-button" style="mso-style-priority:100 !important;text-decoration:none !important;mso-line-height-rule:exactly;color:#ffffff;font-size:14px;padding:10px 20px 10px 20px;display:inline-block;background:transparent;border-radius:5px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';font-weight:normal;font-style:normal;line-height:16.8px;width:auto;text-align:center;letter-spacing:0;mso-padding-alt:0;mso-border-alt:10px solid transparent">Learn More</a>
  </span></td></tr></tbody></table></td></tr></tbody></table><!--[if mso]></td></tr></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table>
  <table cellspacing="0" cellpadding="0" align="center" class="es-content" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important"><tbody><tr><td align="center" bgcolor="#eeeeee" style="padding:0;Margin:0;background-color:#eeeeee"><table cellspacing="0" cellpadding="0" bgcolor="#000" align="center" class="es-content-body" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#000;width:600px" role="none"><tbody><tr><td align="left" style="Margin:0;padding-bottom:25px;padding-top:10px;padding-right:20px;padding-left:20px"><!--[if mso]><table style="width:560px" cellpadding="0" cellspacing="0"><tr><td style="width:160px" valign="top"><![endif]--><table cellpadding="0" cellspacing="0" align="left" class="es-left" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left"><tbody><tr><td align="left" class="es-m-p20b" style="padding:0;Margin:0;width:160px"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"><tbody><tr><td align="center" style="padding:0;Margin:0;font-size:0"><a target="_blank" href="https://www.gbmeals.com/tryfreefor30-days" style="mso-line-height-rule:exactly;text-decoration:underline;color:#2CB543;font-size:14px"><img src="https://fnzaeju.stripocdn.email/content/guids/CABINET_9d51d0cb43d7215811c5045a243cd2f8867c5aa07c9879c4bb732f8814b45f47/images/pic_2.png" alt="" width="160" class="adapt-img" style="display:block;font-size:14px;border:0;outline:none;text-decoration:none"></a>
@@ -2691,7 +2694,7 @@ html_content = """
                                             <p
                                               style="Margin:0;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;letter-spacing:0;color:#333333;font-size:14px">
                                               <span class="es-text-mobile-size-16" style="font-size:16px">Each week,
-                                                you’ll receive a personalize&ZeroWidthSpace;d meal plan with a detailed
+                                                you’ll receive a personalized meal plan with a detailed
                                                 shopping list. Say goodbye to the daily "What’s for dinner?" dilemma!
                                                 Your curated plan makes it easy to stay organized and
                                                 well-prepared.</span></p>
@@ -2765,7 +2768,7 @@ html_content = """
                                             <p
                                               style="Margin:0;mso-line-height-rule:exactly;font-family:roboto, 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;letter-spacing:0;color:#333333;font-size:14px">
                                               <span class="es-text-mobile-size-16" style="font-size:16px">Each week,
-                                                you’ll receive a personalize&ZeroWidthSpace;d meal plan with a detailed
+                                                you’ll receive a personalized meal plan with a detailed
                                                 shopping list. Say goodbye to the daily "What’s for dinner?" dilemma!
                                                 Your curated plan makes it easy to stay organized and
                                                 well-prepared.</span></p>
