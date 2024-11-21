@@ -52,8 +52,8 @@ import json
 
 
 
-config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-# config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
+# config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+config = pdfkit.configuration(wkhtmltopdf=r'/user/bin/wkhtmltopdf')
 # Load environment variables from a .env file
 load_dotenv()
 

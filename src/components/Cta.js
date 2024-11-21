@@ -7,7 +7,8 @@ function Cta(props) {
 
   // Function to handle the "Contact Us" button click, navigates to the contact us page
   const handleContactUsClick = () => {
-    navigate("/contactus");
+    navigate("/myaccount");
+    localStorage.setItem("contact","contact")
   };
   const [formData, setFormData] = useState({
     name: "",

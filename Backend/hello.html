@@ -38,9 +38,10 @@
       
          margin-bottom: 40px;
       }
-      .firsttable tbody tr{
-         border-bottom: 2px solid black;
-      }
+     .firsttable tbody tr td {
+  border-bottom: 2px solid #e5e7eb;
+}
+
 
       .firsttable thead tr th {
          width: 33.33%;
@@ -347,6 +348,86 @@
                   </tr>
                </thead>
                <tbody>
+                  <tr class="trclass" >
+
+                     <td class="firstcolumn">
+                        <!-- Meal Info Section -->
+                        <div class="firstcolumndiv">
+                           <span class="meal">Meal $1</span>
+                           <h3 class="maindish">[Main Dish Name]</h3>
+                           <h4 class="sidedish">[Side Dish Name]</h4>
+                        </div>
+
+                        <!-- Time Table -->
+                        <table class="timetable">
+                           <thead>
+                              <tr>
+                                 <th>Prep</th>
+                                 <th>Cook</th>
+                                 <th>Total</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td>[Prep time]</td>
+                                 <td>[Cook time]</td>
+                                 <td>[Total time]</td>
+                              </tr>
+                           </tbody>
+                        </table>
+
+                        <!-- Nutrition Table -->
+                        <div style="margin-top: 16px;">
+                           <h5>Nutritional Information</h5>
+                           <table class="nutritable">
+                              <thead>
+                                 <tr>
+                                    <th></th>
+                                    <th>Main</th>
+                                    <th>Side</th>
+                                    <th>Total</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr>
+                                    <td>[Nutrition value]</td>
+                                    <td>[Value]</td>
+                                    <td>[Value]</td>
+                                    <td>[Value]</td>
+                                 </tr>
+                              </tbody>
+                           </table>
+                        </div>
+                     </td>
+
+                     <!-- Ingredients Column -->
+                     <td class="secondcolumn">
+                        <div>
+                           <h6>Main Dish Ingredients</h6>
+                           <ol>
+                              <li>[Ingredient value]</li>
+                           </ol>
+                        </div>
+                        <div>
+                           <h6>Side Dish Ingredients</h6>
+                           <ol>
+                              <li>[Ingredient value]</li>
+                           </ol>
+                        </div>
+                     </td>
+
+                     <!-- Instructions Column -->
+                     <td class="secondcolumn">
+                        <div>
+                           <h6>Main Dish Instructions</h6>
+                           <p>[Instructions value]</p>
+                        </div>
+                        <div>
+                           <h6>Side Dish Instructions</h6>
+                           <p>[Instructions value]</p>
+                        </div>
+                     </td>
+                  </tr>
                   <tr class="trclass" >
 
                      <td class="firstcolumn">

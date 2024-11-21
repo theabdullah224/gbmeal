@@ -56,8 +56,9 @@ import ContactUsPage from "./Contactpageuser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf, faTrash } from "@fortawesome/free-solid-svg-icons";
 function UserPage() {
+  const a = localStorage.getItem('contact')
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("pdf");
+  const [activeTab, setActiveTab] = useState(a||"pdf");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [isEmailEditable, setIsEmailEditable] = useState(false);
@@ -309,6 +310,7 @@ function UserPage() {
 
   
   const handleSaveEmailClick = async () => {
+    localStorage.removeItem('contact')
     // eslint-disable-next-line no-restricted-globals
     if(confirm("Are you sure you want to change your email? This action will cancel your current subscription plan.")){
 
@@ -925,6 +927,7 @@ onClick={handleEmailEditClick}
               icon={CreditCard}
               text="Manage Subscription"
               onClick={() => {
+                localStorage.removeItem('contact')
                 setActiveTab("payment");
                 setIsOpen(false)
                 setIsEditable(false);
@@ -945,6 +948,7 @@ onClick={handleEmailEditClick}
               icon={File}
               text="Resource Center"
               onClick={() => {
+                localStorage.removeItem('contact')
                 setActiveTab("pdf");
                 setIsOpen(false)
                 setIsEditable(false);
@@ -1001,6 +1005,7 @@ onClick={handleEmailEditClick}
               icon={FileSpreadsheet}
               text="Manage Preferences"
               onClick={() => {
+                localStorage.removeItem('contact')
                 window.scrollTo({
                   top: 0,
                   behavior: 'smooth', // This adds smooth scrolling
@@ -1025,6 +1030,7 @@ onClick={handleEmailEditClick}
               icon={MessageSquareDot}
               text="Contact Us"
               onClick={() => {
+                localStorage.removeItem('contact')
                 window.scrollTo({
                   top: 0,
                   behavior: 'smooth', // This adds smooth scrolling
@@ -1049,6 +1055,7 @@ onClick={handleEmailEditClick}
               icon={Trash2}
               text="Delete Account"
               onClick={() => {
+                localStorage.removeItem('contact')
                 window.scrollTo({
                   top: 0,
                   behavior: 'smooth', // This adds smooth scrolling
