@@ -140,7 +140,6 @@ function Pref() {
       setallergy(parsedUserData.food_allergy);
       setdislike(parsedUserData.dislikes);
       setservingss(parsedUserData.servings);
-      
     } else {
     }
     if (user) {
@@ -158,38 +157,51 @@ function Pref() {
       // setHasGeneratedPDF(userData.hasGeneratedPDF || false);
       setIsSubscribed(userData.isSubscribed || false);
     }
-  }, [servingss, diatryrestriction, familymember, dislike, allergy, colories,userdataa]);
+  }, [
+    servingss,
+    diatryrestriction,
+    familymember,
+    dislike,
+    allergy,
+    colories,
+    userdataa,
+  ]);
 
   const userdata = localStorage.getItem("userdata");
   const parsedUserData = JSON.parse(userdata);
 
-
-    
   const [menuStates, setMenuStates] = useState({
-    servings: { open: false, selected: parsedUserData?.servings  } ,
-    allergy: { open: false, selected: parsedUserData?.food_allergy.replace(/[{}"]/g, '')  || [], inputValue: '' },
+    servings: { open: false, selected: parsedUserData?.servings },
+    allergy: {
+      open: false,
+      selected: parsedUserData?.food_allergy.replace(/[{}"]/g, "") || [],
+      inputValue: "",
+    },
     preference: { open: false, selected: parsedUserData?.total_calories },
-    dislike: { open: false, selected: parsedUserData?.dislikes.replace(/[{}"]/g, '') ||  [], inputValue: ''},
+    dislike: {
+      open: false,
+      selected: parsedUserData?.dislikes.replace(/[{}"]/g, "") || [],
+      inputValue: "",
+    },
     mealPlan: { open: false, selected: parsedUserData?.dietary_restriction },
     familyMembers: { open: false, selected: parsedUserData?.preferred_meal },
     days: { open: false, selected: parsedUserData?.days },
     MealPerDay: { open: false, selected: parsedUserData?.mealperday },
   });
 
-
-  console.log(parsedUserData?.mealperday)
+ 
 
   const handleInputChange = (menu, value) => {
     setMenuStates({
       ...menuStates,
       [menu]: {
         ...menuStates[menu],
-        inputValue: value // Update the input field value
-      }
+        inputValue: value, // Update the input field value
+      },
     });
   };
   const handleInputKeyDown = (menu, e) => {
-    if (e.key === 'Enter' && e.target.value.trim()) {
+    if (e.key === "Enter" && e.target.value.trim()) {
       e.preventDefault();
       addCustomOption(menu, e.target.value.trim());
     }
@@ -197,17 +209,19 @@ function Pref() {
 
   const addCustomOption = (menu, value) => {
     if (!value) return;
-    
-    setMenuStates(prev => {
-      const currentSelected = Array.isArray(prev[menu].selected) ? prev[menu].selected : [];
+
+    setMenuStates((prev) => {
+      const currentSelected = Array.isArray(prev[menu].selected)
+        ? prev[menu].selected
+        : [];
       if (!currentSelected.includes(value)) {
         return {
           ...prev,
           [menu]: {
             ...prev[menu],
             selected: [...currentSelected, value],
-            inputValue: ''
-          }
+            inputValue: "",
+          },
         };
       }
       return prev;
@@ -215,20 +229,22 @@ function Pref() {
   };
 
   const handleOptionSelect = (menu, option) => {
-    if (menu === 'allergy' || menu === 'dislike') {
-      setMenuStates(prev => {
-        const currentSelected = Array.isArray(prev[menu].selected) ? prev[menu].selected : [];
+    if (menu === "allergy" || menu === "dislike") {
+      setMenuStates((prev) => {
+        const currentSelected = Array.isArray(prev[menu].selected)
+          ? prev[menu].selected
+          : [];
         const updatedSelected = currentSelected.includes(option)
-          ? currentSelected.filter(item => item !== option)
+          ? currentSelected.filter((item) => item !== option)
           : [...currentSelected, option];
-        
+
         return {
           ...prev,
           [menu]: {
             ...prev[menu],
             selected: updatedSelected,
-            open: true // Keep the menu open for multi-select
-          }
+            open: true, // Keep the menu open for multi-select
+          },
         };
       });
     } else {
@@ -240,8 +256,6 @@ function Pref() {
     }
   };
 
- 
-
   const renderMenuItem = (menu, title, placeholder, options) => (
     <li className="relative">
       <span className="text-base font-roboto font-bold truncate">{title}</span>
@@ -252,33 +266,51 @@ function Pref() {
         }`}
         disabled={!isEditable}
       >
-        {(menu === 'allergy' || menu === 'dislike') && Array.isArray(menuStates[menu].selected) 
-          ? menuStates[menu].selected.join(', ')
+        {(menu === "allergy" || menu === "dislike") &&
+        Array.isArray(menuStates[menu].selected)
+          ? menuStates[menu].selected.join(", ")
           : menuStates[menu].selected || placeholder}
         <span>
           <img src={downarrow} className="w-5 ml-3" alt="" />
         </span>
       </button>
       {menuStates[menu].open && (
-        <ul className="absolute z-40 left-0 mt-2 bg-white border border-gray-300 w-full px-2 py-2">
-          {(title === "Tell us about your food allergy" || title === "Tell us about the food you dislike") && (
-            <input
-              type="text"
-              value={menuStates[menu].inputValue || ""}
-              onChange={(e) => handleInputChange(menu, e.target.value)}
-              onKeyDown={(e) => handleInputKeyDown(menu, e)}
-              className="w-full border-2 py-2 text-xs sm:text-sm rounded-md sm:rounded-lg px-2 mb-2"
-              placeholder={`Type and press Enter to add custom ${menu === 'allergy' ? 'allergy' : 'dislike'}`}
-            />
+        <ul className="absolute z-50 left-0 mt-2 bg-white border border-gray-300 w-full px-2 py-2">
+          {(title === "Tell us about your food allergy" ||
+            title === "Tell us about the food you dislike") && (
+            <div className="flex w-full border  text-xs sm:text-sm rounded-md sm:rounded-lg  mb-2 m-0.5 overflow-hidden">
+              <input
+                type="text"
+                value={menuStates[menu].inputValue || ""}
+                onChange={(e) => handleInputChange(menu, e.target.value)}
+                onKeyDown={(e) => handleInputKeyDown(menu, e)}
+                className="w-full py-2  px-2 focus:ring-0 focus:ring-transparent outline-none"
+                placeholder={`Type and press Enter to add custom ${
+                  menu === "allergy" ? "allergy" : "dislike"
+                }`}
+              />
+              <button
+                  onClick={() => {
+                    // Call addCustomOption with the current input value
+                    addCustomOption(menu, menuStates[menu].inputValue.trim());
+                  }}
+              className="   min-h-full px-4 sm:px-6 box-border  flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base">
+                Add
+              </button>
+            </div>
           )}
-          
+
           {options.map((option) => (
             <li key={option}>
-              {(title === "Tell us about your food allergy" || title === "Tell us about the food you dislike") ? (
+              {title === "Tell us about your food allergy" ||
+              title === "Tell us about the food you dislike" ? (
                 <div className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={Array.isArray(menuStates[menu].selected) && menuStates[menu].selected.includes(option)}
+                    checked={
+                      Array.isArray(menuStates[menu].selected) &&
+                      menuStates[menu].selected.includes(option)
+                    }
                     onChange={() => handleOptionSelect(menu, option)}
                     className="mr-2"
                   />
@@ -326,8 +358,8 @@ function Pref() {
         dislikes: menuStates.dislike.selected || "",
         dietary_restriction: menuStates.mealPlan.selected || "",
         total_calories: menuStates.preference.selected || "",
-        days:menuStates.days.selected || "",
-        mealperday:menuStates.MealPerDay.selected || ""
+        days: menuStates.days.selected || "",
+        mealperday: menuStates.MealPerDay.selected || "",
       };
 
       const response = await fetch("https://meeel.xyz/update", {
@@ -342,11 +374,10 @@ function Pref() {
 
       if (response.ok) {
         alert("Update successful");
-       
 
         // setMessage(result.message);
         setError(""); // Clear any previous errors
-        
+
         // Update local state or context with the new values
         // For example:
         // updateUserPreferences(dataToSend);
@@ -395,7 +426,6 @@ function Pref() {
       dislike: menuStates.dislike.selected || "",
       mealPlan: menuStates.mealPlan.selected || "",
     };
-    
 
     // Send dataToSend to your backend
     // Example: axios.post('/api/endpoint', dataToSend);
@@ -414,47 +444,49 @@ function Pref() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-         
           servings: menuStates.servings.selected || "2 servings",
           allergies: menuStates.allergy.selected || "nothing",
           dislikes: menuStates.dislike.selected || "nothing",
           dietaryRestrictions: menuStates.mealPlan.selected || "nothing",
-          total_calories:menuStates.preference.selected || "blank",
-          mealperday:menuStates.MealPerDay.selected || "blank",
-          days:"6 days",
-          id:userId
+          total_calories: menuStates.preference.selected || "blank",
+          mealperday: menuStates.MealPerDay.selected || "blank",
+          days: "6 days",
+          id: userId,
         }),
       });
 
       const generateData = await generateResponse.json();
-    
-    const mealPlanBlob = base64ToBlob(generateData.meal_plan_pdf, "application/pdf");
-    const mealPlanUrl = URL.createObjectURL(mealPlanBlob);
-    const mealPlanLink = document.createElement("a");
-    mealPlanLink.href = mealPlanUrl;
-    mealPlanLink.download = "meal_plan.pdf";
-    document.body.appendChild(mealPlanLink);
-    mealPlanLink.click();
-    document.body.removeChild(mealPlanLink);
-    URL.revokeObjectURL(mealPlanUrl);
 
-    // Handle shopping list PDF
-    const shoppingListBlob = base64ToBlob(generateData.shopping_list_pdf, "application/pdf");
-    const shoppingListUrl = URL.createObjectURL(shoppingListBlob);
-    const shoppingListLink = document.createElement("a");
-    shoppingListLink.href = shoppingListUrl;
-    shoppingListLink.download = "shopping_list.pdf";
-    document.body.appendChild(shoppingListLink);
-    shoppingListLink.click();
-    document.body.removeChild(shoppingListLink);
-    URL.revokeObjectURL(shoppingListUrl);
-        
-     
+      const mealPlanBlob = base64ToBlob(
+        generateData.meal_plan_pdf,
+        "application/pdf"
+      );
+      const mealPlanUrl = URL.createObjectURL(mealPlanBlob);
+      const mealPlanLink = document.createElement("a");
+      mealPlanLink.href = mealPlanUrl;
+      mealPlanLink.download = "meal_plan.pdf";
+      document.body.appendChild(mealPlanLink);
+      mealPlanLink.click();
+      document.body.removeChild(mealPlanLink);
+      URL.revokeObjectURL(mealPlanUrl);
+
+      // Handle shopping list PDF
+      const shoppingListBlob = base64ToBlob(
+        generateData.shopping_list_pdf,
+        "application/pdf"
+      );
+      const shoppingListUrl = URL.createObjectURL(shoppingListBlob);
+      const shoppingListLink = document.createElement("a");
+      shoppingListLink.href = shoppingListUrl;
+      shoppingListLink.download = "shopping_list.pdf";
+      document.body.appendChild(shoppingListLink);
+      shoppingListLink.click();
+      document.body.removeChild(shoppingListLink);
+      URL.revokeObjectURL(shoppingListUrl);
+
       if (!generateResponse.ok || generateData.error) {
         throw new Error(generateData.error || "Failed to generate PDF.");
       }
-
-   
 
       const sendResponse = await fetch(`https://meeel.xyz/send-pdf`, {
         method: "POST",
@@ -462,11 +494,9 @@ function Pref() {
         body: JSON.stringify({
           email,
           meal_plan_pdf: generateData.meal_plan_pdf,
-          shopping_list_pdf: generateData.shopping_list_pdf
-      }),
+          shopping_list_pdf: generateData.shopping_list_pdf,
+        }),
       });
-      
-    
 
       const sendData = await sendResponse.json();
 
@@ -559,18 +589,14 @@ function Pref() {
     }
   };
 
-  
- 
- 
-
   function base64ToBlob(base64, type) {
     const byteCharacters = atob(base64);
     const byteNumbers = new Uint8Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     return new Blob([byteNumbers], { type });
-}
+  }
   return (
     <div>
       <div className="">
@@ -592,29 +618,26 @@ function Pref() {
               {renderMenuItem(
                 "MealPerDay",
                 "How many Meals are required per Day?",
-                `${menuStates.MealPerDay.selected  || "Select Meal/day"}`,
-                [ "2 Meals", "3 Meals","4 Meals","5 Meals"]
+                `${menuStates.MealPerDay.selected || "Select Meal/day"}`,
+                ["2 Meals", "3 Meals", "4 Meals", "5 Meals"]
               )}
-             
+
               {renderMenuItem(
                 "servings",
                 "How Many Servings Do You Need?",
-                `${menuStates.servings.selected || "Select the number of servings you need per meal."}`,
-                ["1 Person", "2 People", "3 People", "4 People",]
+                `${
+                  menuStates.servings.selected ||
+                  "Select the number of servings you need per meal."
+                }`,
+                ["1 Person", "2 People", "3 People", "4 People"]
               )}
               {renderMenuItem(
                 "allergy",
                 "Tell us about your food allergy",
                 menuStates.allergy.selected ||
                   "Enter/select allergy if you have any",
-                  
-                [                  
-                  "Eggs",
-                  "Cheese",
-                  "Tofu",
-                  "Butter",
-                  "Coconut",
-                ]
+
+                ["Eggs", "Cheese", "Tofu", "Butter", "Coconut"]
               )}
               {renderMenuItem(
                 "dislike",
@@ -625,8 +648,7 @@ function Pref() {
               {renderMenuItem(
                 "mealPlan",
                 "Choose your preferred meal plan",
-                menuStates.mealPlan.selected ||
-                  "select preferred meal plan",
+                menuStates.mealPlan.selected || "select preferred meal plan",
                 [
                   "Carb (promotes weight loss)",
                   "Balanced diet ( Mediterranean diet)",
@@ -677,31 +699,30 @@ function Pref() {
             </ul>
 
             <div className="flex gap-2 flex-col sm:flex-row sm:gap-2 flex-wrap items-center justify-center">
-
-            <button
-              onClick={handleGeneratePDF}
-              className={`${
-                loader && "disabled:opacity-50 cursor-not-allowed"
+              <button
+                onClick={handleGeneratePDF}
+                className={`${
+                  loader && "disabled:opacity-50 cursor-not-allowed"
                 } mt-4    py-2 px-6 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base`}
-              disabled={loader}
-            >
-              {loader ? "Generating..." : "Generate PDF"}
-            </button>
-            {isEditable ? (
-              <button
-              onClick={handleSubmit}
-              className="sm:mt-4   py-2 px-14 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base"
+                disabled={loader}
               >
-                save
+                {loader ? "Generating..." : "Generate PDF"}
               </button>
-            ) : (
-              <button
-              onClick={handleEditClick}
-              className="sm:mt-4   py-2 px-14 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base"
-              >
-                Edit
-              </button>
-            )}
+              {isEditable ? (
+                <button
+                  onClick={handleSubmit}
+                  className="sm:mt-4   py-2 px-14 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base"
+                >
+                  save
+                </button>
+              ) : (
+                <button
+                  onClick={handleEditClick}
+                  className="sm:mt-4   py-2 px-14 box-border rounded-lg flex items-center justify-center bg-P-Green1 text-white shadow-[inset_4px_4px_8px_#2a322179] hover:shadow-[inset_0px_0px_0px_#2A3221] font-roboto font-medium text-base"
+                >
+                  Edit
+                </button>
+              )}
             </div>
           </div>
         </div>
