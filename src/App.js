@@ -27,9 +27,18 @@ import DeleteConfirmation from './components/DeleteConfirmation';
 import DeleteCard from './components/DeleteCard';
 import OurStory from './components/Story';
 import Cookies from './components/Cookies';
+import ReactGA from "react-ga4";
 // This function defines the main part of our application
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Initialize Google Analytics with your Measurement ID
+    ReactGA.initialize("G-TFXPD4QNWR");  // Replace with your own Measurement ID
+  }, []);
+
+
+
   useEffect(() => {
     // Check localStorage for the "user" object
     const user = localStorage.getItem("user");
@@ -60,6 +69,7 @@ function App() {
         {/* This section displays the current page the user is on */}
         <div className="route-section  ">
           <Routes location={location}> 
+          <PageTracker />
             {/* Defining different pages the user can navigate to */}
             <Route path="/" element={<Sec1 />} /> {/* Homepage */}
             <Route path="/tryfreefor30-days" element={<Mealplanner />} /> {/* Meal Planner page */}
@@ -112,3 +122,13 @@ function AppWithRouter() {
 
 // Exporting AppWithRouter as the main component that will be used to display the app
 export default AppWithRouter;
+
+const PageTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send("pageview");  // Send pageview event to Google Analytics
+  }, [location]);
+
+  return null;
+};
