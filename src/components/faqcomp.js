@@ -46,7 +46,7 @@ const FAQ = () => {
     },
     {
       question: "How much does gbmeals cost?",
-      answer: "You can subscribe to our service for £6.99 per month or take advantage of our annual subscription for £69. You can cancel your subscription at any time."
+      answer: "You can subscribe to our service for £6.99 per month or take advantage of our annual subscription for £59. You can cancel your subscription at any time."
     },
     {
       question: "Can I customize my meal plan according to my dietary restrictions?",
